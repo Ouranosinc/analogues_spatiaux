@@ -1,0 +1,133 @@
+project:
+    name: proj-analogues-spatiaux
+    version: 1.0.0
+    region:
+        name: NAM
+        method: bbox
+        buffer: 1.5  # multiplier to apply on model resolution (not the subset_shape argument)
+        bbox:
+            lon_bnds: [-170, -48]
+            lat_bnds: [22, 85]
+plots:
+    spread_mode: spag-roll
+
+logging:
+    formatters:
+        default:
+            format: '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
+            datefmt: '%Y-%m-%d %H:%M:%S'
+    handlers:
+        console:
+            class : logging.StreamHandler
+            formatter: default
+            level : DEBUG
+    loggers:
+        workflow:
+            level: DEBUG
+            handlers: [console]
+
+dask:
+    #dashboard_address: 8785
+    num_workers: 16
+    array.slicing.split_large_chunks: False
+
+extraction:
+    simulations:
+        - MIROC_MIROC-ES2L_r1i1p1f2
+        - EC-Earth-Consortium_EC-Earth3-Veg-LR_r3i1p1f1
+        - CCCma_CanESM5_r13i1p1f1
+        - IPSL_IPSL-CM6A-LR_r14i1p1f1
+        - MRI_MRI-ESM2-0_r1i1p1f1
+        - MPI-M_MPI-ESM1-2-LR_r3i1p1f1
+        - CAS_FGOALS-g3_r4i1p1f1
+        - NOAA-GFDL_GFDL-CM4_r1i1p1f1
+        - MIROC_MIROC6_r1i1p1f1
+        - NIMS-KMA_KACE-1-0-G_r1i1p1f1
+        - NOAA-GFDL_GFDL-ESM4_r1i1p1f1
+        - CMCC_CMCC-ESM2_r1i1p1f1
+        - NUIST_NESM3_r1i1p1f1
+        - INM_INM-CM4-8_r1i1p1f1
+        - CSIRO-ARCCSS_ACCESS-CM2_r3i1p1f1
+        - NCC_NorESM2-LM_r1i1p1f1
+        - EC-Earth-Consortium_EC-Earth3_r125i1p1f1
+        - NCC_NorESM2-MM_r1i1p1f1
+        - INM_INM-CM5-0_r1i1p1f1
+        - BCC_BCC-CSM2-MR_r1i1p1f1
+        - CNRM-CERFACS_CNRM-CM6-1_r1i1p1f2
+        - CNRM-CERFACS_CNRM-ESM2-1_r1i1p1f2
+        - EC-Earth-Consortium_EC-Earth3-Veg_r4i1p1f1
+        - EC-Earth-Consortium_EC-Earth3-CC_r1i1p1f1
+    catalog_url: https://cmip6-pds.s3.amazonaws.com/pangeo-cmip6.json
+
+biasadjust:
+    method: DQM # PCA+EQM
+    double_method: scaling
+    attrs_single:
+        global:
+            Conventions: CF-1.9
+            title: Daily bias-adjusted CMIP6 simulations - Canadian cities - for spatial analogs"
+            title_fr: Simulations CMIP6 quotidiennes débiaisées - Villes canadiennes - pour analogues spatiaux"
+            institution: Ouranos
+            references: "Logan et al. Ouranosinc/xclim: v0.35 Zenodo. https://doi.org/10.5281/zenodo.6407112"
+            contact: bourgault.pascal@ouranos.ca
+            source: Daily timeseries of canadian cities extracted from raw CMIP6 simulations, adjusted with a Detrended Quantile Mapping procedure against ERA5-Land. Annual climatic indices computed with xclim.
+            version: "1.0.0"
+        tasmax:
+            standard_name: air_temperature
+            long_name: Maximal daily temperature
+            cell_methods: "time: maximum within days"
+        tasmin:
+            standard_name: air_temperature
+            long_name: Minimal daily temperature
+            cell_methods: "time: minimum within days"
+        pr:
+            standard_name: precipitation_flux
+            long_name: Mean daily precipitation flux
+            cell_methods: "time: mean within days"
+    attrs_double:
+        source: Daily timeseries of canadian cities extracted from raw CMIP6 simulations, adjusted with a Detrended Quantile Mapping procedure against ERA5-Land. Annual climatic indices computed and ajusted again with a {double_method} method.
+        global:
+            Conventions: CF-1.9
+            title: Annual doubly-bias-adjusted indices from CMIP6 simulations - Canadian cities - for spatial analogs"
+            title_fr: Indices climatiques doublement débiaisés des simulations CMIP6 - Villes canadiennes - pour analogues spatiaux"
+            institution: Ouranos
+            references: "Logan et al. Ouranosinc/xclim: v0.35 Zenodo. https://doi.org/10.5281/zenodo.6407112"
+            contact: bourgault.pascal@ouranos.ca
+            version: "1.0.0"
+    additive_indices:
+        - TXx
+        - TG
+        - TNn
+
+indicators:
+    indicators_from_yaml:
+        overwrite: False
+        filename_pattern: "{timestep_id}_{simulation_id}_{date_start:%Y}-{date_end:%Y}.zarr"
+    attrs_sim:
+        Conventions: CF-1.9
+        title: Annual climatic indices - CMIP6 simulations - single adjustment - Canadian cities - for spatial analogs
+        title_fr: Indices climatiques annuels - simulations CMIP6 - ajustement simple - Villes canadiennes - pour analogues spatiaux
+        institution: Ouranos Inc.
+        references: "Logan et al. Ouranosinc/xclim: v0.34 Zenodo. doi:10.5281/zenodo.2795043"
+        contact: bourgault.pascal@ouranos.ca
+    attrs_ref:
+        Conventions: CF-1.9
+        title: Annual climatic indices - ERA5-Land - North America - for spatial analogs
+        title_fr: Indices climatiques annuels - ERA5-Land - Amérique du Nord - pour analogues spatiaux
+        institution: Ouranos
+        references: "Logan et al. Ouranosinc/xclim: v0.34 Zenodo. doi:10.5281/zenodo.2795043"
+        contact: bourgault.pascal@ouranos.ca
+        attribution: Contains modified Copernicus Climate Change Service Information 2021.
+
+analog_quantiles:
+    min_density: 50
+    num_couples: 200000
+    chunksize: 1000
+    quantiles:
+        - 0
+        - 1.0
+        - 0.01
+
+selfanalogy:
+    adj: double
+    method: closestP

@@ -1,0 +1,36 @@
+# This config file should contain all values that are not to be pushed on GITHUB
+# Usually this means the paths.
+# Exposing paths to a public repo exposes the internal structure of your server, and is not considered a good practice.
+# My own paths have been obfuscated here.
+# /datadir/ : is where I save the large data
+# /projectdir/ : is where this github repo's local folder.
+# /tmp/ : is a dir where Dask can write temporary data
+project:
+    workdir: /projectdir/
+    masks: /datadir/masques.zarr
+    datadir: /datadir/
+dask:
+    #local_directory: /tmp
+    temporary_directory: /tmp
+
+biasadjust:
+    reference_raw: /datadir/daily_ERA5-Land_NAM_1981-2020.zarr
+    reference: /datadir/daily_ERA5-Land_cities_1981-2020.zarr
+    reference_indices: /datadir/reference/year_era5-land_1981-2020.zarr
+    simulations_raw: /datadir/simulations/raw/
+    simulations: /datadir/simulations/raw/day_CMIP6_sorted_members.zarr
+    output: /datadir/simulations/ba/day_CMIP6_sorted_adjusted_1950-2100.zarr
+    output_indices_single: /datadir/simulations/indices/year_CMIP6_cities_single-adjustment_1950-2100.zarr
+    output_indices_double: /datadir/simulations/indices/year_CMIP6_cities_double-adjustment_1950-2100.zarr
+    output_indices_double_dqm: /datadir/simulations/indices/year_CMIP6_cities_double-qm_1950-2100.zarr
+
+indicators:
+    indicators_from_yaml:
+        indicator_file: /projectdir/analog
+    ref_netcdf: /datadir/reference/netCDF/
+    sim_netcdf: /datadir/simulations/netCDF/
+    figures:
+        folder: /datadir/Figures/Indices/Ver4-{level}-{mode}/
+
+analog_quantiles:
+    output: /datadir/benchmarks.nc

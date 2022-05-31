@@ -1,0 +1,191 @@
+doc: |
+  =======================================
+  Canadian cities spatial analogs indices
+  =======================================
+
+  Indices for the Canadian cities Spatial Analogs project.
+indicators:
+  prcptot:
+    base: prcptot
+    cf_attrs:
+      long_name: Total precipitation
+      description: The annual total amount of precipitation (rain and snow combined).
+      var_name: RR
+    parameters:
+      freq: YS
+  tx_max:
+    base: tx_max
+    cf_attrs:
+      long_name: Hottest day
+      description: The annual maximum of daily maximum temperature (Tmax).
+      var_name: TXx
+    parameters:
+      freq: YS
+  frost_days:
+    base: frost_days
+    cf_attrs:
+      long_name: Frost days
+      dexcription: The annual number of days with Tmin < 0°C.
+      var_name: FD
+    parameters:
+      freq: YS
+      thresh: 0 degC
+  growing_season_length:
+    base: growing_season_length
+    cf_attrs:
+      long_name: Growing season length
+      description: The annual number of days between the last occurrence of Tmin < 0°C in spring and the first occurrence of Tmin < 0°C in fall.
+      var_name: GSL
+    parameters:
+      freq: YS
+      thresh: 0 degC
+      window: 1
+      mid_date: 07-01
+  growing_degree_days_base5:
+    base: growing_degree_days
+    cf_attrs:
+      long_name: Growing degree days (5°C)
+      description: The annual number of degree days accumulated above a threshold temperature of 5°C.
+      var_name: GDD5
+    parameters:
+      freq: YS
+      thresh: 5 degC
+  heating_degree_days:
+    base: heating_degree_days
+    cf_attrs:
+      long_name: Heating degree days
+      description: The annual number of degree days accumulated below 17°C.
+      var_name: HDD
+    parameters:
+      freq: YS
+      thresh: 17 degC
+  last_spring_frost:
+    base: last_spring_frost
+    cf_attrs:
+      long_name: Last Spring Frost
+      description: The spring date after which there are no daily minimum temperatures during the growing season less than 0°C (Tmin > 0°C). 
+      var_name: LSF
+    inputs:
+      tas: tasmin
+    parameters:
+      freq: YS
+      thresh: 0 degC
+      window: 1
+      before_date: 07-01
+  first_fall_frost:
+    base: first_day_below
+    cf_attrs:
+      long_name: First Fall Frost
+      description: The first date in the fall (or late summer) on which the daily minimum temperature is less than 0°C (Tmin < 0°C). 
+      var_name: FAF
+    parameters:
+      freq: YS
+      thresh: 0 degC
+      window: 1
+      after_date: 07-01
+  degree_days_base10:
+    base: growing_degree_days
+    cf_attrs:
+      long_name: Growing degree days (10°C)
+      description: The annual number of degree days accumulated above a threshold temperature of 10°C.
+      var_name: GDD10
+    parameters:
+      freq: YS
+      thresh: 10 degC
+  degree_days_base0:
+    base: growing_degree_days
+    cf_attrs:
+      long_name: Degree days above 0°C
+      description: The annual number of degree days accumulated above a threshold temperature of 0°C.
+      var_name: GDD0
+    parameters:
+      freq: YS
+      thresh: 0 degC
+  tg_mean:
+    base: tg_mean
+    cf_attrs:
+      long_name: Mean temperature
+      description: Annual average of the daily mean temperature (Tmean).
+      var_name: TG
+    parameters:
+      freq: YS
+  tn_min:
+    base: tn_min
+    cf_attrs:
+      long_name: Coldest day
+      description: Annual minimum of daily minimum temperature (Tmin).
+      var_name: TNn
+    parameters:
+      freq: YS
+  tx_days_above_30:
+    base: tx_days_above
+    cf_attrs:
+      long_name: Days with Tmax > 30°C
+      description: Annual number of days with Tmax > 30°C.
+      var_name: TXgt30
+    parameters:
+      freq: YS
+      thresh: 30 degC
+  tx_days_above_25:
+    base: tx_days_above
+    cf_attrs:
+      long_name: Days with Tmax > 25°C
+      description: Annual number of days with Tmax > 25°C.
+      var_name: TXgt25
+    parameters:
+      freq: YS
+      thresh: 25 degC
+  tropical_nights_above_22:
+    base: tropical_nights
+    cf_attrs:
+      long_name: Tropical nights
+      description: Annual number of days with the daily minimum temperature (Tmin) greater than 22°C.
+      var_name: TNgt22
+    parameters:
+      freq: YS
+      thresh: 22 degC
+  cooling_degree_days_base18:
+    base: cooling_degree_days
+    cf_attrs:
+      long_name: Cooling degree days
+      description: The annual number of degree days accumulated above 18°C.
+      var_name: CDD
+    parameters:
+      freq: YS
+      thresh: 18 degC
+  max_1day_precipitation_amount:
+    base: max_n_day_precipitation_amount
+    cf_attrs:
+      long_name: Maximum 1-day precipitation
+      description: The largest annual precipitation total that falls in a single day.
+      var_name: RX1day
+    parameters:
+      freq: YS
+      window: 1
+  wet_days_above_20:
+    base: wetdays
+    cf_attrs:
+      long_name: Wet days
+      description: The annual number of days with precipitation > 20 mm.
+      var_name: R20mm
+    parameters:
+      freq: YS
+      thresh: 20 mm/d
+  max_5_day_precipitation_amount:
+    base: max_n_day_precipitation_amount
+    cf_attrs:
+      long_name: Maximum 5-day precipitation
+      description: The annual maximum total precipitation that falls over a consecutive 5-day period.
+      var_name: RX5day
+    parameters:
+      freq: YS
+      window: 5
+  ice_days:
+    base: ice_days
+    cf_attrs:
+      long_name: Ice days
+      description: The annual number of days when the daily maximum temperature (Tmax) is less than 0°C.
+      var_name: ID
+    parameters:
+      freq: YS
+      thresh: 0 degC
