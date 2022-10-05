@@ -1,0 +1,16 @@
+#!/bin/sh -x
+# Restart appropriate service depending on files changed.
+#
+# Handle all services from this same repo.
+#
+# This script should only be used to restart containers, do not use it to
+# modify files, files it touches will have wrong permissions.
+
+#if [ -n "`echo "$GIT_CHANGED_FILES" | grep hello_world_app/`" ]; then
+if [ -n "$GIT_CHANGED_FILES" -o -z "$GIT_PREVIOUS_COMMIT_HASH" ]; then
+    if [ -n "`docker ps --format '{{.Names}}' | grep analogues_spatiaux`" ]; then
+        # Restart if any files changed or on first clone when GIT_PREVIOUS_COMMIT_HASH is emtpy.
+        # If depends on specific files in the repo, update the grep line.
+        docker restart analogues_spatiaux  # container name from pavics_panel_ouranos_deploy repo
+    fi
+fi
