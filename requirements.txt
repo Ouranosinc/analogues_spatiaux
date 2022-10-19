@@ -1,0 +1,14 @@
+dask
+intake
+matplotlib==3.5.0
+numpy
+pandas==1.4.2
+PyYAML
+xarray==2022.3.0
+xclim
+xesmf
+jupyter
+panel==0.12.7
+geopandas
+geoviews
+hvplot
