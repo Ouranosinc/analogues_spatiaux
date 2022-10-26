@@ -1,5 +1,5 @@
 serve:
-	panel serve Dashboard.ipynb --prefix analogues_spatiaux --autoreload --log-level=debug
+	panel serve Dashboard.ipynb --prefix analogs --autoreload --log-level=debug
 
 build-local:
 	docker build -t analogues-spatiaux:dev .
