@@ -4,21 +4,14 @@ FROM continuumio/miniconda3
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /
-
-# COPY ./requirements.txt app/
-
 WORKDIR /app
-
-
-
-COPY ./reqs.debug.txt /app/
 
 RUN conda install cartopy netcdf4=1.5.6 && conda clean -afy
 RUN conda install --channel conda-forge esmpy && conda clean -afy
 
-RUN pip install -r reqs.debug.txt
+COPY ./reqs.debug.txt /app/
 
+RUN pip install -r reqs.debug.txt
 
 WORKDIR /
 
