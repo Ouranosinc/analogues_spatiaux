@@ -1,0 +1,50 @@
+### Git
+.gitignore
+.git/
+
+### IDE
+.idea/
+.vscode/
+
+### Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+### Make
+# Pattern is different than .gitignore because .dockerignore processes matching differently 
+# (https://docs.docker.com/engine/reference/builder/#dockerignore-file)
+[ 'M', 'm' ]akefile* 
+*.m*k*
+
+### Coverage and tests
+.coverage
+reports/
+
+### Python
+*.egg-info/
+*.egg[s]
+.installed.cfg
+build/
+develop-eggs/
+dist/
+downloads/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+MANIFEST
+
+### Packaging
+*.md
+!CHANGES.md
+!README.md
+.bumpversion.cfg
