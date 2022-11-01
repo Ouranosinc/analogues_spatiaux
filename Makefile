@@ -1,6 +1,9 @@
 serve:
 	panel serve Dashboard.ipynb --prefix analogs --autoreload --log-level=debug
 
+profile:
+	panel serve Dashboard.ipynb --prefix analogs --autoreload --log-level=debug --admin --profiler snakeviz
+
 build-local:
 	docker build -t analogues-spatiaux:dev .
 
