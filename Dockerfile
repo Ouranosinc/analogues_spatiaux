@@ -21,4 +21,4 @@ WORKDIR /app
 
 EXPOSE 5006
 
-ENTRYPOINT ["panel", "serve", "Dashboard.ipynb", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug"]
+ENTRYPOINT ["panel", "serve", "Dashboard.ipynb", "--warm", "--static-dirs", "assets=./assets", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug"]
