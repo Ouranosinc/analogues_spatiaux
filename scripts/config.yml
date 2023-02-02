@@ -119,15 +119,6 @@ indicators:
         contact: bourgault.pascal@ouranos.ca
         attribution: Contains modified Copernicus Climate Change Service Information 2021.
 
-analog_quantiles:
-    min_density: 50
-    num_couples: 200000
-    chunksize: 1000
-    quantiles:
-        - 0
-        - 1.0
-        - 0.01
-
 selfanalogy:
     adj: double
     method: closestP

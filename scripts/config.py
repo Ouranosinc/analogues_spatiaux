@@ -11,6 +11,7 @@ from pathlib import Path
 import yaml
 from copy import deepcopy
 import inspect
+import xarray as xr
 import xclim as xc
 logger = logging.getLogger("workflow")
 EXTERNAL_MODULES = ['logging', 'xarray', 'xclim']
@@ -127,4 +128,4 @@ def setup_external(module, config):
     elif module == 'xclim':
         xc.set_options(**config)
     elif module == 'xarray':
-        xc.set_options(**config)
+        xr.set_options(**config)

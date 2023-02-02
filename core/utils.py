@@ -5,6 +5,7 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import Point
 import xarray as xr
+from xclim import analog as xa
 from .constants import quality_thresholds, num_realizations
 
 
@@ -93,3 +94,11 @@ def dec2sexa(num, secfmt='02.0f'):
         minu = 0
         sec = 0
     return f"{deg}°{minu:02.0f}′{sec:{secfmt}}″"
+
+
+def n_combinations(n, k):
+    return np.math.factorial(n) / (np.math.factorial(k) * np.math.factorial(n - k))
+
+
+def _zech_aslan(inputs):
+    return xa.zech_aslan(inputs[0], inputs[1])
