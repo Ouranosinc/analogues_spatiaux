@@ -1,6 +1,5 @@
 # utils.py
 import dask
-from dask.diagnostics import ProgressBar
 import geopandas as gpd
 import numpy as np
 from shapely.geometry import Point
@@ -8,6 +7,29 @@ import xarray as xr
 from xclim import analog as xa
 from .constants import quality_thresholds, num_realizations
 
+from xarray import __version__ as xa_ver
+from xclim import __version__ as xc_ver
+from pandas import __version__ as pd_ver
+from geopandas import __version__ as gp_ver
+from joblib import __version__ as jl_ver
+
+from pathlib import Path
+import json
+
+def check_version(config):
+    """ returns true if the current config version is the most up to date.
+    """
+    ### VERSIONS:
+    # check versions to delete or not the cache:
+    ver_new = {"xa":xa_ver,"xc":xc_ver,"pd":pd_ver,"gp":gp_ver,"jl":jl_ver}
+    if "versions" in config:
+        ver_old = config["versions"]
+        if any([((k not in ver_old) or (ver_old[k] != ver_new[k])) for k in ver_new]):
+            return False
+        return True
+    else: # versions not in config, assume it is not up to date.
+        return False 
+        
 
 def open_thredds(url):
     """Open netCDF files on thredds and decode the string variables."""
@@ -55,29 +77,6 @@ def get_quality_flag(score=None, indices=None, benchmark=None, percentile=None):
     if isinstance(score, xr.DataArray):
         return score.copy(data=q).rename('quality_flag')
     return q
-
-
-def get_unusable_indices(cities, dref, dsim, iloc, ssp, tgt_period):
-    """Return a set of indices that are not usable for this combination of city, scenario and target period.
-
-    This simply tests that the standard deviation is null over any realization on the reference period or the target period,
-    or over the reference.
-    """
-    city = cities.iloc[iloc]
-    ref = (dref.sel(lat=city.geometry.y, lon=city.geometry.x).std('time') == 0)
-    sim = dsim.isel(location=iloc, realization=slice(0, num_realizations)).sel(ssp=ssp)
-    simh = (sim.sel(time=slice('1991', '2020')).std('time') == 0).any('realization')
-    simf = (sim.sel(time=tgt_period).std('time') == 0).any('realization')
-    with ProgressBar():
-        simh, simf, ref = dask.compute(simh, simf, ref)
-    return set(
-        [name for name, var in simh.data_vars.items() if var]
-    ).union(
-        [name for name, var in simf.data_vars.items() if var]
-    ).union(
-        [name for name, var in ref.data_vars.items() if var]
-    )
-
 
 def get_distances(lon, lat, geom):
     df = gpd.GeoDataFrame(geometry=[Point(lo, la) for lo, la in zip(lon, lat)], crs=4326)
