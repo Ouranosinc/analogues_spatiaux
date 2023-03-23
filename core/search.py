@@ -23,7 +23,7 @@ from .utils import (
 )
 from joblib import Memory
 cachedir = "./cache/"
-mem = Memory(cachedir, verbose=0, bytes_limit=1e9)
+mem = Memory(cachedir, verbose=0, bytes_limit=1e9, compress=9)
 logger = logging.getLogger('analogs')
 
 @mem.cache(ignore=["cities","dref","dsim"])
@@ -122,39 +122,130 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
     """ This function computes additional variables for each analog in analogs, based on given inputs.
         These additional variables are lookups, may produce large variables, but are fast to compute.
         Thus, they are not cached with _analogs_search."""
+    analogDF = []
     for analog in analogs:
-        score = analog["score"]
-        lon = analog["lon"]
-        lat = analog["lat"]
-        analog["realization"]= sim.isel(realization=analog["ireal"]).realization.item()
-        analog["density"]    = density.sel(lon=lon,lat=lat).item()
-        analog["geometry"]   = Point(lon,lat)
-        analog["percentile"] = get_score_percentile(score, climate_indices, benchmark)
-        analog["qflag"]      = get_quality_flag(percentile=analog["percentile"])
-        analog["quality"]    = quality_terms[analog["qflag"]]
-        
-    analogDF = gpd.GeoDataFrame.from_records(analogs).sort_values('zscore').reset_index(drop=True).set_crs(epsg=4326)
+        # unpack analog array:
+        ireal,site,zscore,score,lat,lon = analog
+        percentile = get_score_percentile(score, climate_indices, benchmark)
+        qflag = get_quality_flag(percentile=percentile)
+        quality = quality_terms[qflag]
+        analogDict = dict(ireal = ireal,
+                          site  = site,
+                          zscore= zscore,
+                          score = score,
+                          lat   = lat,
+                          lon   = lon,
+                          realization = sim.isel(realization=ireal).realization.item(), 
+                          density     = density.sel(lon=lon,lat=lat).item(), 
+                          geometry    = Point(lon,lat), 
+                          percentile  = percentile  , 
+                          qflag       = qflag       , 
+                          quality     = quality     
+                         )
+        analogDF.append(analogDict)
+    analogDF = gpd.GeoDataFrame.from_records(analogDF).sort_values('zscore').reset_index(drop=True).set_crs(epsg=4326)
     analogDF['rank'] = analogDF.index + 1
     return analogDF
 
+class BEST_ANALOG_MODES(Enum):
+    CLOSESTPER = 0
+    CLOSESTN   = 1
+    MIN        = 2
+
+class SSP(Enum):
+    SSP45 = 0
+    SSP85 = 1
+
+def _simplify_args(dsim,
+                   best_analog_mode, # 2 bits
+                   icity,            # 8 bits (65 cities)
+                   climate_indices,  # 20 bits
+                   density_factor,   # 4 bits (up to 10)
+                   tgt_period,       # 4 bits (11 different ones)
+                   ssp,              # 1 bit
+                   num_realizations):# 4 bits (up to 12), total: 30+8+5 = 43 bits => 48/8 = 7 bytes
+    
+    ssp_bit = ssp == 'ssp45' # 1 bit
+    
+    all_indices = [x.name for k,x in dsim.data_vars.items()] 
+    climate_bits = [x in climate_indices for x in all_indices] #20 bits
+    
+    _to_utf(best_analog_bits + 
+            icity_bits +
+            climate_bits +
+            density_bits +
+            tgt_bits +
+            [ssp_bit] +
+            real_bits + [0,0,0,0,0])
+
+def _to_utf(bitlist):
+    # convert list of bits [1, 0, 1...] to a utf-8 string
+    s = ''.join([str(x) for x in bitlist])
+    bytelistb = [s[i:i+8].rjust(8,'0') for i in range(0, len(s), 8)] # bytelist of bits
+    bytelistB = [int(b,2) for b in bytelistb]
+    ustring = ''.join([chr(x) for x in bytelistB])
+    return ustring
+
+def _to_bitlist(ustring):
+    bytelist = [ord(b) for b in ustring]
+    return [bin(b)[2:].rjust(8,'0') for b in bytelist]
+
+def _unsimplify_args(args):
+    return best_analog_mode, icity, climate_indices, density_factor, tgt_perior, ssp, num_realizations
+
+def _to_short(site,zscore,score,lat,lon):
+    latmin = 20.
+    latmax = 85.
+    lonmin = -168.
+    lonmax = -48.
+
+    scoremin = -50.
+    scoremax = 50.
+    zscale = 10.
+    # transform lat from 0 to 1:
+    lat_to_norm = lambda lat : (lat - latmin) / (latmax - latmin)
+    lon_to_norm = lambda lon : (lon - lonmin) / (lonmax - lonmin)
+    zscore_to_norm = lambda zscore : zscore / zscale
+    score_to_norm  = lambda score : (score - scoremin) / (scoremax - scoremin)
+
+    # transform lat from 0 to 65535 (ushort)
+    umax = 65535
+    norm_to_short = lambda x: x * umax
+
+    
+    return (site, norm_to_short(zscore_to_norm(zscore)), norm_to_short(score_to_norm(score)), norm_to_short(lat_to_norm(lat)), norm_to_short(lon_to_norm(lon)))
+
+def _to_float(site,zscore,score,lat,lon):
+    latmin = 20.
+    latmax = 85.
+    lonmin = -168.
+    lonmax = -48.
+
+    scoremin = -50.
+    scoremax = 50.
+    zscale = 10.
+    # transform from ushortnorm to 0-1:
+    short_to_norm = lambda x: x / umax
+
+    # transform from unorm to lat,lon:
+    norm_to_lat = lambda x: (x * (latmax - latmin)) + latmin
+    norm_to_lon = lambda x: (x * (lonmax - lonmin)) + lonmin
+    norm_to_score = lambda x: (x * (scoremax - scoremin)) + scoremin
+    norm_to_zscore = lambda x: (x * zscale)
+    return (site, norm_to_zscore(short_to_norm(zscore)), norm_to_score(short_to_norm(score)), norm_to_lat(short_to_norm(lat)), norm_to_lon(short_to_norm(lon)))
 @mem.cache(ignore=["sim","ref","benchmark","cities"])               
 def _analogs_search( sim,
                      ref,
                      benchmark,
                      cities,
-                     best_analog_mode, 
-                     icity,
-                     climate_indices,# not used, but used to identify ref/sim
-                     density_factor,  # not used, but used to identify ref
-                     tgt_period,
-                     ssp,
-                     num_realizations): # used to identify sim
+                     a): # compressed arguments for caching efficiency.
     """ This function computes the analogs search. 
         It isn't meant to be called directly, as you should use the wrapper, analogs, to compute extra variables efficiently
     """
     # Compute the Zech-Aslan dissimiarity
     # We also keep the simulated and reference timeseries in memory for the graphs.
     # percentiles are computed for the `closestPer` method.
+    best_analog_mode, icity, climate_indices, density_factor, tgt_perior, ssp, num_realizations = _unsimplify_args(args)
     
     city = cities.iloc[icity]
     
@@ -190,17 +281,13 @@ def _analogs_search( sim,
             i = dists.argmin()
 
         score = diss.isel(site=i)
-        analogs.append(
-            dict(
-                ireal=ireal,
-                site=score.site.item(),
-                zscore=simzscore.sel(realization=real).item(),
-                score=score.item(),
-                lat = score.lat.item(),
-                lon = score.lon.item(),
-            )
-        )
-    return analogs
+        site = score.site.item()
+        lat = score.lat.item()
+        lon = score.lon.item()
+        zscore = simzscore.sel(realization=real).item()
+        analogs.append(np.around(_to_short(site,zscore,score.item(),lat,lon)))
+        
+    return np.array(analogs,dtype='<u2').tobytes()
 
 
 def montecarlo_distribution(ds, mask, maxindicators=5, couples=200000, workers=4):
