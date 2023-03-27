@@ -11,6 +11,9 @@ quality_terms = ['Excellent', 'Good', 'Average', 'Poor']
 quality_colors = ['#90EE90', '#FFFFE0', '#FFE4C4', '#F08080']  # Translated from matplotlib's : ['lightgreen', 'lightyellow', 'bisque', 'lightcoral']
 
 num_realizations = 12  # Number of realization included in the results
+max_real = 12
+
 best_analog_mode = 'closestPer'  # closestN or min, see below
+analog_modes = ['closestPer','closestN','min']
 num_bestanalogs = 10  # for closestN
 per_bestanalogs = 1  # for closestPer

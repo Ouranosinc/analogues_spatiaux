@@ -12,7 +12,7 @@ from shapely.geometry import Point
 import xarray as xr
 from xclim import analog as xa
 from xclim.core.utils import uses_dask
-from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms
+from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms, analog_modes, max_real
 from .utils import (
     get_distances,
     get_quality_flag,
@@ -21,6 +21,13 @@ from .utils import (
     stack_drop_nans,
     _zech_aslan
 )
+
+from .compress import (
+    simplify_args,
+    _to_short,
+    _to_float
+)
+
 from joblib import Memory
 cachedir = "./cache/"
 mem = Memory(cachedir, verbose=0, bytes_limit=1e9, compress=9)
@@ -57,65 +64,49 @@ def analogs( dsim,
              dref,
              density,
              benchmark,
-             cities,
-             icity,
+             city,cities,
              climate_indices,
-             density_factor,
-             tgt_period,
-             ssp,
-             best_analog_mode=best_analog_mode, 
-             num_realizations=num_realizations):
+             density_factor,max_density,
+             tgt_period,periods,
+             ssp,ssp_list,
+             best_analog_mode=best_analog_mode, analog_modes=analog_modes,
+             num_realizations=num_realizations, max_real=max_real):
     """ This function handles computation of the analogs search function"""
-    city = cities.iloc[icity]
     sim = dsim[climate_indices].isel(location=city.location).sel(ssp=ssp).isel(realization=slice(0, num_realizations))
     ref = None
-    if _analogs_search.check_call_in_cache(sim,
+    
+    all_indices = [x.name for k,x in dsim.data_vars.items()]
+    
+    arg_repr, full_args = simplify_args(best_analog_mode,analog_modes,
+                                                       city, cities,  
+                                                       climate_indices, all_indices,
+                                                       density_factor, max_density,
+                                                       tgt_period, periods,      
+                                                       ssp,ssp_list,
+                                                       num_realizations,max_real)
+    need_call = _analogs_search.check_call_in_cache(sim,
                                    ref,
                                    benchmark,
                                    cities,
-                                   best_analog_mode, 
-                                   icity,
-                                   climate_indices,# not used, but used to identify ref/sim
-                                   density_factor,  # not used, but used to identify ref
-                                   tgt_period,
-                                   ssp,
-                                   num_realizations):
-        # don't need to compute ref, only need to compute on city.
-        analogs = _analogs_search(sim,
-                                   ref,
-                                   benchmark,
-                                   cities,
-                                   best_analog_mode, 
-                                   icity,
-                                   climate_indices,# not used, but used to identify ref/sim
-                                   density_factor,  # not used, but used to identify ref
-                                   tgt_period,
-                                   ssp,
-                                   num_realizations)
-        analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim)
-        
-        #ref_cities = dref[climate_indices].sel(site=[x.site for x in analogDF])
-        dask.compute(sim) # can parallelize both tasks
-    else:
+                                   full_args,
+                                   arg_repr)
+    analogDF = None
+    if not need_call:
         mask = (density < (city.density * density_factor)) & (density > max(city.density / density_factor, 10))
-        
         ref = stack_drop_nans(dref[climate_indices], mask).chunk({'site': 100})
-        analogs = _analogs_search( sim,
+        
+    analogs_raw = _analogs_search(sim,
                                    ref,
                                    benchmark,
                                    cities,
-                                   best_analog_mode, 
-                                   icity,
-                                   climate_indices,# not used, but used to identify ref/sim
-                                   density_factor,  # not used, but used to identify ref
-                                   tgt_period,
-                                   ssp,
-                                   num_realizations)
-        analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim)
-        #ref_cities = dref[climate_indices].sel(site=[x.site for x in analogDF])
-        # compute step takes place in get_best_analogs...
-        # lets double check though, and recompute if not:
-        dask.compute(sim)
+                                   full_args,
+                                   arg_repr)
+    
+    analogs = [_to_float(*x) for x in np.frombuffer(analogs_raw,'<u2').reshape((12,5))]
+    
+    analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim)
+    #ref_cities = dref[climate_indices].sel(site=[x.site for x in analogDF])
+ 
     return analogs,analogDF,sim#,ref_cities
 
 def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
@@ -123,9 +114,15 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
         These additional variables are lookups, may produce large variables, but are fast to compute.
         Thus, they are not cached with _analogs_search."""
     analogDF = []
-    for analog in analogs:
+    for ireal,analog in enumerate(analogs):
         # unpack analog array:
-        ireal,site,zscore,score,lat,lon = analog
+        site,zscore,score,lat,lon = analog
+        d = density.sel(lat=lat,lon=lon, method='nearest')
+        
+        lat = d.lat.item()
+        lon = d.lon.item()
+        densitypt = d.item()
+        
         percentile = get_score_percentile(score, climate_indices, benchmark)
         qflag = get_quality_flag(percentile=percentile)
         quality = quality_terms[qflag]
@@ -136,7 +133,7 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
                           lat   = lat,
                           lon   = lon,
                           realization = sim.isel(realization=ireal).realization.item(), 
-                          density     = density.sel(lon=lon,lat=lat).item(), 
+                          density     = densitypt, 
                           geometry    = Point(lon,lat), 
                           percentile  = percentile  , 
                           qflag       = qflag       , 
@@ -147,116 +144,30 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
     analogDF['rank'] = analogDF.index + 1
     return analogDF
 
-class BEST_ANALOG_MODES(Enum):
-    CLOSESTPER = 0
-    CLOSESTN   = 1
-    MIN        = 2
-
-class SSP(Enum):
-    SSP45 = 0
-    SSP85 = 1
-
-def _simplify_args(dsim,
-                   best_analog_mode, # 2 bits
-                   icity,            # 8 bits (65 cities)
-                   climate_indices,  # 20 bits
-                   density_factor,   # 4 bits (up to 10)
-                   tgt_period,       # 4 bits (11 different ones)
-                   ssp,              # 1 bit
-                   num_realizations):# 4 bits (up to 12), total: 30+8+5 = 43 bits => 48/8 = 7 bytes
-    
-    ssp_bit = ssp == 'ssp45' # 1 bit
-    
-    all_indices = [x.name for k,x in dsim.data_vars.items()] 
-    climate_bits = [x in climate_indices for x in all_indices] #20 bits
-    
-    _to_utf(best_analog_bits + 
-            icity_bits +
-            climate_bits +
-            density_bits +
-            tgt_bits +
-            [ssp_bit] +
-            real_bits + [0,0,0,0,0])
-
-def _to_utf(bitlist):
-    # convert list of bits [1, 0, 1...] to a utf-8 string
-    s = ''.join([str(x) for x in bitlist])
-    bytelistb = [s[i:i+8].rjust(8,'0') for i in range(0, len(s), 8)] # bytelist of bits
-    bytelistB = [int(b,2) for b in bytelistb]
-    ustring = ''.join([chr(x) for x in bytelistB])
-    return ustring
-
-def _to_bitlist(ustring):
-    bytelist = [ord(b) for b in ustring]
-    return [bin(b)[2:].rjust(8,'0') for b in bytelist]
-
-def _unsimplify_args(args):
-    return best_analog_mode, icity, climate_indices, density_factor, tgt_perior, ssp, num_realizations
-
-def _to_short(site,zscore,score,lat,lon):
-    latmin = 20.
-    latmax = 85.
-    lonmin = -168.
-    lonmax = -48.
-
-    scoremin = -50.
-    scoremax = 50.
-    zscale = 10.
-    # transform lat from 0 to 1:
-    lat_to_norm = lambda lat : (lat - latmin) / (latmax - latmin)
-    lon_to_norm = lambda lon : (lon - lonmin) / (lonmax - lonmin)
-    zscore_to_norm = lambda zscore : zscore / zscale
-    score_to_norm  = lambda score : (score - scoremin) / (scoremax - scoremin)
-
-    # transform lat from 0 to 65535 (ushort)
-    umax = 65535
-    norm_to_short = lambda x: x * umax
-
-    
-    return (site, norm_to_short(zscore_to_norm(zscore)), norm_to_short(score_to_norm(score)), norm_to_short(lat_to_norm(lat)), norm_to_short(lon_to_norm(lon)))
-
-def _to_float(site,zscore,score,lat,lon):
-    latmin = 20.
-    latmax = 85.
-    lonmin = -168.
-    lonmax = -48.
-
-    scoremin = -50.
-    scoremax = 50.
-    zscale = 10.
-    # transform from ushortnorm to 0-1:
-    short_to_norm = lambda x: x / umax
-
-    # transform from unorm to lat,lon:
-    norm_to_lat = lambda x: (x * (latmax - latmin)) + latmin
-    norm_to_lon = lambda x: (x * (lonmax - lonmin)) + lonmin
-    norm_to_score = lambda x: (x * (scoremax - scoremin)) + scoremin
-    norm_to_zscore = lambda x: (x * zscale)
-    return (site, norm_to_zscore(short_to_norm(zscore)), norm_to_score(short_to_norm(score)), norm_to_lat(short_to_norm(lat)), norm_to_lon(short_to_norm(lon)))
-@mem.cache(ignore=["sim","ref","benchmark","cities"])               
+from types import SimpleNamespace
+@mem.cache(ignore=["sim","ref","benchmark","cities","full_args"])               
 def _analogs_search( sim,
                      ref,
                      benchmark,
                      cities,
+                     full_args,
                      a): # compressed arguments for caching efficiency.
     """ This function computes the analogs search. 
         It isn't meant to be called directly, as you should use the wrapper, analogs, to compute extra variables efficiently
     """
+    ns = SimpleNamespace(**full_args) # call variables passed to simplify_args with ns.[varname]
     # Compute the Zech-Aslan dissimiarity
     # We also keep the simulated and reference timeseries in memory for the graphs.
     # percentiles are computed for the `closestPer` method.
-    best_analog_mode, icity, climate_indices, density_factor, tgt_perior, ssp, num_realizations = _unsimplify_args(args)
     
-    city = cities.iloc[icity]
-    
-    sim_tgt = sim.sel(time=tgt_period).drop_vars(['lon', 'lat'])
+    sim_tgt = sim.sel(time=ns.tgt_period).drop_vars(['lon', 'lat'])
     dissimilarity = xa.spatial_analogs(
         sim_tgt, ref, dist_dim='time', method='zech_aslan'
     )
     simzscore = xa.spatial_analogs(
         sim_tgt.mean('realization'), sim_tgt, dist_dim='time', method='seuclidean'
     )
-    percs = get_score_percentile(dissimilarity, climate_indices, benchmark)
+    percs = get_score_percentile(dissimilarity, ns.climate_indices, benchmark)
     sim, ref, dissimilarity, percs, simzscore = dask.compute(sim, ref, dissimilarity, percs, simzscore)
 
     analogs = []
@@ -264,20 +175,20 @@ def _analogs_search( sim,
         diss = dissimilarity.sel(realization=real)
         perc = percs.sel(realization=real)
 
-        if best_analog_mode == 'min':
+        if ns.best_analog_mode == 'min':
             i = diss.argmin().item()
-        elif best_analog_mode == 'closestN':
-            diss = diss.sortby(diss).isel(site=slice(None, num_bestanalogs))
-            dists = get_distances(diss.lon, diss.lat, city.geometry)
+        elif ns.best_analog_mode == 'closestN':
+            diss = diss.sortby(diss).isel(site=slice(None, ns.num_bestanalogs))
+            dists = get_distances(diss.lon, diss.lat, ns.city.geometry)
             i = dists.argmin()
-        elif best_analog_mode == 'closestPer':
+        elif ns.best_analog_mode == 'closestPer':
             perc_min = perc.min()
             if perc_min.isnull().item():
                 # Woups
                 continue
             diss = diss.where(perc < perc_min + per_bestanalogs, drop=True)
             diss = diss.sortby(diss)
-            dists = get_distances(diss.lon, diss.lat, city.geometry)
+            dists = get_distances(diss.lon, diss.lat, ns.city.geometry)
             i = dists.argmin()
 
         score = diss.isel(site=i)
