@@ -120,10 +120,10 @@ scoremin = -50.
 scoremax = 50.
 zscale = 10.
 
-def _to_short(site,zscore,score,lat,lon):
+def _to_short(site,zscore,score,ilat,ilon):
     # transform lat from 0 to 1:
-    lat_to_norm = lambda lat : (lat - latmin) / (latmax - latmin)
-    lon_to_norm = lambda lon : (lon - lonmin) / (lonmax - lonmin)
+    #lat_to_norm = lambda lat : (lat - latmin) / (latmax - latmin)
+    #lon_to_norm = lambda lon : (lon - lonmin) / (lonmax - lonmin)
     zscore_to_norm = lambda zscore : zscore / zscale
     score_to_norm  = lambda score : (score - scoremin) / (scoremax - scoremin)
 
@@ -132,15 +132,15 @@ def _to_short(site,zscore,score,lat,lon):
     norm_to_short = lambda x: x * umax
 
     
-    return (site, norm_to_short(zscore_to_norm(zscore)), norm_to_short(score_to_norm(score)), norm_to_short(lat_to_norm(lat)), norm_to_short(lon_to_norm(lon)))
+    return (site, norm_to_short(zscore_to_norm(zscore)), norm_to_short(score_to_norm(score)), ilat, ilon)
 
-def _to_float(site,zscore,score,lat,lon):
+def _to_float(site,zscore,score,ilat,ilon):
     # transform from ushortnorm to 0-1:
     short_to_norm = lambda x: x / umax
 
     # transform from unorm to lat,lon:
-    norm_to_lat = lambda x: (x * (latmax - latmin)) + latmin
-    norm_to_lon = lambda x: (x * (lonmax - lonmin)) + lonmin
+    #norm_to_lat = lambda x: (x * (latmax - latmin)) + latmin
+    #norm_to_lon = lambda x: (x * (lonmax - lonmin)) + lonmin
     norm_to_score = lambda x: (x * (scoremax - scoremin)) + scoremin
     norm_to_zscore = lambda x: (x * zscale)
-    return (site, norm_to_zscore(short_to_norm(zscore)), norm_to_score(short_to_norm(score)), norm_to_lat(short_to_norm(lat)), norm_to_lon(short_to_norm(lon)))
+    return (site, norm_to_zscore(short_to_norm(zscore)), norm_to_score(short_to_norm(score)), ilat, ilon)

@@ -84,20 +84,22 @@ def analogs( dsim,
                                                        tgt_period, periods,      
                                                        ssp,ssp_list,
                                                        num_realizations,max_real)
-    need_call = _analogs_search.check_call_in_cache(sim,
+    in_cache = _analogs_search.check_call_in_cache(sim,
                                    ref,
                                    benchmark,
+                                   density,
                                    cities,
                                    full_args,
                                    arg_repr)
     analogDF = None
-    if not need_call:
+    if not in_cache:
         mask = (density < (city.density * density_factor)) & (density > max(city.density / density_factor, 10))
         ref = stack_drop_nans(dref[climate_indices], mask).chunk({'site': 100})
-        
+    
     analogs_raw = _analogs_search(sim,
                                    ref,
                                    benchmark,
+                                   density,
                                    cities,
                                    full_args,
                                    arg_repr)
@@ -105,9 +107,18 @@ def analogs( dsim,
     analogs = [_to_float(*x) for x in np.frombuffer(analogs_raw,'<u2').reshape((12,5))]
     
     analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim)
-    #ref_cities = dref[climate_indices].sel(site=[x.site for x in analogDF])
- 
-    return analogs,analogDF,sim#,ref_cities
+    
+    
+    
+    if not in_cache:
+        ref_cities = ref # ref is already computed, just use it.
+    else:
+        pts = analogDF[['site','lon','lat']].set_index('site')
+        pts = pts[~pts.index.duplicated(keep='first')].to_xarray()
+        
+        ref_cities = dref[climate_indices].sel(lon=pts.lon,lat=pts.lat)
+        
+    return analogDF,sim,ref_cities
 
 def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
     """ This function computes additional variables for each analog in analogs, based on given inputs.
@@ -116,12 +127,12 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
     analogDF = []
     for ireal,analog in enumerate(analogs):
         # unpack analog array:
-        site,zscore,score,lat,lon = analog
-        d = density.sel(lat=lat,lon=lon, method='nearest')
+        site,zscore,score,ilat,ilon = analog
+        d = density.isel(lat=ilat,lon=ilon)
         
         lat = d.lat.item()
         lon = d.lon.item()
-        densitypt = d.item()
+        densityPt = d.item()
         
         percentile = get_score_percentile(score, climate_indices, benchmark)
         qflag = get_quality_flag(percentile=percentile)
@@ -130,10 +141,12 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
                           site  = site,
                           zscore= zscore,
                           score = score,
+                          ilat  = ilat,
+                          ilon  = ilon,
                           lat   = lat,
                           lon   = lon,
-                          realization = sim.isel(realization=ireal).realization.item(), 
-                          density     = densitypt, 
+                          simulation = sim.isel(realization=ireal).realization.item(), 
+                          density     = densityPt, 
                           geometry    = Point(lon,lat), 
                           percentile  = percentile  , 
                           qflag       = qflag       , 
@@ -145,10 +158,11 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
     return analogDF
 
 from types import SimpleNamespace
-@mem.cache(ignore=["sim","ref","benchmark","cities","full_args"])               
+@mem.cache(ignore=["sim","ref","benchmark","cities","full_args","density"])               
 def _analogs_search( sim,
                      ref,
                      benchmark,
+                     density,
                      cities,
                      full_args,
                      a): # compressed arguments for caching efficiency.
@@ -168,9 +182,12 @@ def _analogs_search( sim,
         sim_tgt.mean('realization'), sim_tgt, dist_dim='time', method='seuclidean'
     )
     percs = get_score_percentile(dissimilarity, ns.climate_indices, benchmark)
-    sim, ref, dissimilarity, percs, simzscore = dask.compute(sim, ref, dissimilarity, percs, simzscore)
-
-    analogs = []
+    ilat_ref = density.indexes["lat"]
+    ilon_ref = density.indexes["lon"]
+    ref, dissimilarity, percs, simzscore = dask.compute(ref, dissimilarity, percs, simzscore)
+    
+    analogs = np.zeros((12,5),dtype='<u2')
+    
     for ireal,real in enumerate(sim.realization):
         diss = dissimilarity.sel(realization=real)
         perc = percs.sel(realization=real)
@@ -193,10 +210,14 @@ def _analogs_search( sim,
 
         score = diss.isel(site=i)
         site = score.site.item()
+        
         lat = score.lat.item()
+        ilat = ilat_ref.get_loc(lat,method='nearest')
         lon = score.lon.item()
+        ilon = ilon_ref.get_loc(lon,method='nearest')
+        
         zscore = simzscore.sel(realization=real).item()
-        analogs.append(np.around(_to_short(site,zscore,score.item(),lat,lon)))
+        analogs[ireal,:] = np.around(_to_short(site,zscore,score.item(),ilat,ilon))
         
     return np.array(analogs,dtype='<u2').tobytes()
 
