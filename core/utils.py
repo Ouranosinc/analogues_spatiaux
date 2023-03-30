@@ -40,7 +40,22 @@ def open_thredds(url):
                 ds[c] = ds[c].str.decode('latin1')
     return ds
 
+from xclim.core.utils import uses_dask
 
+def is_computed(df):
+    # returns true if df is computed, false if not.
+    return not uses_dask(df) # no longer a dask array.
+
+def inplace_compute(*df):
+    """ Given the input dataframes df, computes them and updates them in place. similar to sim = dask.compute(sim), 
+        but allows to do partial computations and allocations. """
+    df_comp = dask.compute(*df)
+    for i,dfi in enumerate(df):
+        if hasattr(dfi,"update"):
+            dfi.update(df_comp[i])
+        else: # DataArray, not Dataset
+            dfi.data = df_comp[i].data
+    
 def stack_drop_nans(ds, mask):
     """Stack dimensions into a single axis 'site' and drops indexes where the mask is false."""
     mask_1d = mask.stack(site=mask.dims).reset_index('site').drop_vars(mask.coords.keys())

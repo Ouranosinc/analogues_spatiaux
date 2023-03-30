@@ -11,7 +11,6 @@ import pandas as pd
 from shapely.geometry import Point
 import xarray as xr
 from xclim import analog as xa
-from xclim.core.utils import uses_dask
 from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms, analog_modes, max_real
 from .utils import (
     get_distances,
@@ -19,7 +18,9 @@ from .utils import (
     get_score_percentile,
     n_combinations,
     stack_drop_nans,
-    _zech_aslan
+    _zech_aslan,
+    inplace_compute,
+    is_computed
 )
 
 from .compress import (
@@ -57,8 +58,7 @@ def get_unusable_indices(cities, dref, dsim, iloc, ssp, tgt_period):
         [name for name, var in ref.data_vars.items() if var]
     )
 
-def is_computed(array):
-    return not uses_dask(array) # no longer a dask array.
+
 
 def analogs( dsim,
              dref,
@@ -73,7 +73,6 @@ def analogs( dsim,
              num_realizations=num_realizations, max_real=max_real):
     """ This function handles computation of the analogs search function"""
     sim = dsim[climate_indices].isel(location=city.location).sel(ssp=ssp).isel(realization=slice(0, num_realizations))
-    ref = None
     
     all_indices = [x.name for k,x in dsim.data_vars.items()]
     
@@ -84,6 +83,11 @@ def analogs( dsim,
                                                        tgt_period, periods,      
                                                        ssp,ssp_list,
                                                        num_realizations,max_real)
+    
+    analogDF = None
+    
+    mask = (density < (city.density * density_factor)) & (density > max(city.density / density_factor, 10))
+    ref = stack_drop_nans(dref[climate_indices], mask).chunk({'site': 100})
     in_cache = _analogs_search.check_call_in_cache(sim,
                                    ref,
                                    benchmark,
@@ -91,10 +95,6 @@ def analogs( dsim,
                                    cities,
                                    full_args,
                                    arg_repr)
-    analogDF = None
-    if not in_cache:
-        mask = (density < (city.density * density_factor)) & (density > max(city.density / density_factor, 10))
-        ref = stack_drop_nans(dref[climate_indices], mask).chunk({'site': 100})
     
     analogs_raw = _analogs_search(sim,
                                    ref,
@@ -110,7 +110,7 @@ def analogs( dsim,
     
     
     
-    if not in_cache:
+    if is_computed(ref):
         ref_cities = ref # ref is already computed, just use it.
     else:
         pts = analogDF[['site','lon','lat']].set_index('site')
@@ -184,7 +184,8 @@ def _analogs_search( sim,
     percs = get_score_percentile(dissimilarity, ns.climate_indices, benchmark)
     ilat_ref = density.indexes["lat"]
     ilon_ref = density.indexes["lon"]
-    ref, dissimilarity, percs, simzscore = dask.compute(ref, dissimilarity, percs, simzscore)
+    inplace_compute(sim, ref)
+    dissimilarity, percs, simzscore = dask.compute(dissimilarity, percs, simzscore)
     
     analogs = np.zeros((12,5),dtype='<u2')
     
