@@ -64,7 +64,7 @@ def analogs( dsim,
              dref,
              density,
              benchmark,
-             city,cities,
+             city,cities,places,
              climate_indices,
              density_factor,max_density,
              tgt_period,periods,
@@ -106,7 +106,7 @@ def analogs( dsim,
     
     analogs = [_to_float(*x) for x in np.frombuffer(analogs_raw,'<u2').reshape((12,5))]
     
-    analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim)
+    analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim,city, cities,places)
     
     
     
@@ -120,7 +120,7 @@ def analogs( dsim,
         
     return analogDF,sim,ref_cities
 
-def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
+def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city, cities, places):
     """ This function computes additional variables for each analog in analogs, based on given inputs.
         These additional variables are lookups, may produce large variables, but are fast to compute.
         Thus, they are not cached with _analogs_search."""
@@ -133,6 +133,17 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
         lat = d.lat.item()
         lon = d.lon.item()
         densityPt = d.item()
+        geometry = Point(lon, lat)
+        
+        geocrs = gpd.GeoDataFrame({'geometry':[geometry]}, crs='EPSG:4326').to_crs(epsg=8858)
+        distances = places.distance(geocrs.geometry.iloc[0])
+        near_city = places.iloc[distances.argmin()].copy()
+        near_dist = geocrs.distance(cities.loc[[city.name]].to_crs(epsg=8858).geometry.iloc[0]).iloc[0] / 1000
+
+        if near_city.ADM0_A3 in ['USA', 'CAN']:
+            near_city['fullname'] = f"{near_city['NAME']}, {near_city['ADM1NAME']}"
+        else:
+            near_city['fullname'] = f"{near_city['NAME']}, {near_city['ADM0_A3']}"
         
         percentile = get_score_percentile(score, climate_indices, benchmark)
         qflag = get_quality_flag(percentile=percentile)
@@ -146,8 +157,10 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim):
                           lat   = lat,
                           lon   = lon,
                           simulation = sim.isel(realization=ireal).realization.item(), 
+                          near   = near_city['fullname'],
+                          near_dist   = near_dist,
                           density     = densityPt, 
-                          geometry    = Point(lon,lat), 
+                          geometry    = geometry, 
                           percentile  = percentile  , 
                           qflag       = qflag       , 
                           quality     = quality     
