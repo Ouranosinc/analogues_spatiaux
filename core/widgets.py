@@ -1,11 +1,37 @@
 # widgets.py
 from dask.diagnostics import ProgressBar
 from io import StringIO
-from panel import Row
+from panel import Row, Tabs
 from panel.viewable import Viewer
 from panel.widgets import Progress as _Progress, Toggle
 import param
 
+from typing import (ClassVar, List)
+class TabsMod(Tabs):
+    closablelist = param.List([],item_type=bool)
+    _manual_params: ClassVar[List[str]] = ['closablelist'] + Tabs._manual_params
+    
+    def __init__(self, *objects, **params):
+        super().__init__(*objects, **params)
+        self.closablelist = [self.closable for i in objects]
+        
+    def _get_objects(self, model, old_objects, doc, root, comm=None):  
+        new_models = super()._get_objects(model, old_objects, doc, root, comm=None)
+        for i,panel in enumerate(new_models):
+            if i < len(self.closablelist):
+                panel.closable = self.closablelist[i]
+            else:
+                panel.closable = self.closable
+                self.closablelist.append( self.closable)
+        return new_models
+    
+    def _manual_update(self, events, model, doc, root, parent, comm):
+        for event in events:
+            if event.name == 'closablelist':
+                for i,child in enumerate(model.tabs):
+                    child.closable = event.new[i]
+        super()._manual_update(events, model, doc, root, parent, comm)
+        
 
 # Task/Dask callback and progress.
 class Progress(ProgressBar, Viewer):

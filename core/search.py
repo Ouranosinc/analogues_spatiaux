@@ -104,7 +104,7 @@ def analogs( dsim,
                                    full_args,
                                    arg_repr)
     
-    analogs = [_to_float(*x) for x in np.frombuffer(analogs_raw,'<u2').reshape((12,5))]
+    analogs = [_to_float(*x) for x in np.frombuffer(analogs_raw,'<u2').reshape((num_realizations,5))]
     
     analogDF = _compute_analog_vars(analogs,climate_indices,benchmark,density,sim,city, cities,places)
     
@@ -200,7 +200,7 @@ def _analogs_search( sim,
     inplace_compute(sim, ref)
     dissimilarity, percs, simzscore = dask.compute(dissimilarity, percs, simzscore)
     
-    analogs = np.zeros((12,5),dtype='<u2')
+    analogs = np.zeros((ns.num_realizations,5),dtype='<u2')
     
     for ireal,real in enumerate(sim.realization):
         diss = dissimilarity.sel(realization=real)

@@ -199,6 +199,9 @@ body h3 {
   margin-bottom: 0.5rem;
 }
 
+#pn-Modal {
+  z-index: 1001;
+}
 /* 
    Fix for scrollbar being on top of modal... 
    put it on the left...
@@ -223,6 +226,20 @@ body h3 {
   
 */
 
+table.link-table {
+  width: 300px;
+}
+
+table.link-table td {
+  text-align: left;
+  padding: 0.5rem;
+}
+
+table.link-table tr {
+  background-color: white;
+  
+}
+
 #container .bk-root {
   font-family: var(--font-family-sans-serif);
 }
@@ -235,6 +252,9 @@ body h3 {
   border-radius: 25px;
   box-shadow: none;
   transition: 0.25s;
+  display: flex;
+  justify-content:center;
+  align-items:center;
 }
 
 #sidebar .bk-root .bk-btn {
@@ -254,12 +274,20 @@ body h3 {
 
 /* select */
 
+.bk-root .bk-input {
+  padding: 0;
+}
+.bk-root .bk.card {
+  margin-left: 10px;
+}
+
 #sidebar .bk-root select:not([multiple]).bk-input,
 #sidebar .bk-root select:not([size]).bk-input {
   border-radius: 0;
   border-color: var(--primary);
   transition: 0.25s;
-  /* padding: 0.5rem 0.75rem; */
+  padding: 5px 10px;
+  width: 280px;
 }
 
 .bk-root select:not([multiple]).bk-input:hover,
