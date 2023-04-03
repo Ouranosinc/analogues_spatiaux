@@ -11,7 +11,7 @@ import pandas as pd
 from shapely.geometry import Point
 import xarray as xr
 from xclim import analog as xa
-from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms, analog_modes, max_real
+from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms_en, quality_terms_fr, analog_modes, max_real
 from .utils import (
     get_distances,
     get_quality_flag,
@@ -147,7 +147,8 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city
         
         percentile = get_score_percentile(score, climate_indices, benchmark)
         qflag = get_quality_flag(percentile=percentile)
-        quality = quality_terms[qflag]
+        quality_en = quality_terms_en[qflag]
+        quality_fr = quality_terms_fr[qflag]
         analogDict = dict(ireal = ireal,
                           site  = site,
                           zscore= zscore,
@@ -163,7 +164,8 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city
                           geometry    = geometry, 
                           percentile  = percentile  , 
                           qflag       = qflag       , 
-                          quality     = quality     
+                          quality_en  = quality_en,
+                          quality_fr  = quality_fr
                          )
         analogDF.append(analogDict)
     analogDF = gpd.GeoDataFrame.from_records(analogDF).sort_values('zscore').reset_index(drop=True).set_crs(epsg=4326)
