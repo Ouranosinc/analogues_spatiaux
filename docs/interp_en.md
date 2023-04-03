@@ -10,7 +10,7 @@ __Summary Information__:
 
 - __Representativeness score__: This is a measure of how well a realization is represented by the ensemble mean, and is unrelated to the quality of an analogy.
 
-__Variable information__: Each variable shows three plots: the distribution comparison, the average change, and the full timeseries.
+__Variable information__: Each variable shows three plots: the distribution comparison, the average change, and the full timeseries. They also each show the single variable comparison between the two 
 
 - __Distribution comparison__: This plot shows the approximate probablity distribution of the variable in the present, in the future, and the analogue's distribution in the present, for the chosen realization. It can help you decide if the analogue is appropriate or not.
 

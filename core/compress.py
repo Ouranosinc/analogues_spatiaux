@@ -1,3 +1,4 @@
+import base64
 
 def get_nbits(x):
     return len(bin(x)[2:])
@@ -24,7 +25,7 @@ def bin_to_utf(binstr):
     #s = ''.join([str(x) for x in bitlist])
     bytelistb = [binstr[i:i+8].rjust(8,'0') for i in range(0, len(binstr), 8)] # bytelist of bits
     bytelistB = [int(b,2) for b in bytelistb]
-    ustring = ''.join([chr(x) for x in bytelistB])
+    ustring = base64.b85encode(bytes(bytelistB))
     return ustring
 
 def utf_to_bin(ustring):
@@ -60,8 +61,7 @@ class Argument:
 def simplify(args):
     binstr = ''
     for arg in args:
-        if arg.type == int:
-            binstr += int_to_bin(arg.val,arg.max)
+        binstr += int_to_bin(arg.val,arg.max)
     binstr = pad_byte(binstr)
     return bin_to_utf(binstr)
 
@@ -84,7 +84,7 @@ def simplify_city(city,cities):
     
 
 def simplify_climate(all_indices,climate_indices):
-    return [Argument(val=(x in climate_indices)) for x in all_indices]
+    return [Argument(val=(x in climate_indices), max=1) for x in all_indices]
 
 def simplify_item(item,options):
     for i,p in enumerate(options):

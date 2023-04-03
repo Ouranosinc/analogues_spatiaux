@@ -227,7 +227,7 @@ body h3 {
 */
 
 table.link-table {
-  width: 300px;
+  width: 500px;
 }
 
 table.link-table td {
