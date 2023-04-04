@@ -96,3 +96,5 @@ class ColoredToggleGroup(Viewer):
                     self.value = i
                 elif b.value:
                     b.value = False
+
+    

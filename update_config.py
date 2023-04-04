@@ -355,17 +355,43 @@ progress::-webkit-progress-value {
   z-index: 5 !important;
 }
 
+span.quality-word {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+span.quality-word.Excellent {
+  color: var(--green);
+}
+
+span.quality-word.Good {
+  color: var(--blue-light1);
+}
+
+span.quality-word.Average {
+  color: var(--yellow);
+}
+
+span.quality-word.Poor {
+  color: var(--orange);
+}
+
+span[class^='rank-word-'], span[class*=' rank-word-'] {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 .tg-excellent button {
-    background-color: #90EE90 !important;
+    background-color: var(--green) !important;
 }
 .tg-good button {
-    background-color: #FFFFE0 !important;
+    background-color: var(--blue-light1) !important;
 }
 .tg-average button {
-    background-color: #FFE4C4 !important;
+    background-color: var(--yellow) !important;
 }
 .tg-poor button {
-    background-color: #F08080 !important;
+    background-color: var(--orange) !important;
 }
 .tgx button {
     border-radius: 30px !important;
