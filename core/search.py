@@ -13,7 +13,6 @@ import xarray as xr
 from xclim import analog as xa
 from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms_en, quality_terms_fr, analog_modes, max_real
 from .utils import (
-    get_distances,
     get_quality_flag,
     get_score_percentile,
     n_combinations,
@@ -28,6 +27,7 @@ from .compress import (
     _to_short,
     _to_float
 )
+from clisops.core.subset import distance
 
 from joblib import Memory
 cachedir = "./cache/"
@@ -134,16 +134,19 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city
         lon = d.lon.item()
         densityPt = d.item()
         geometry = Point(lon, lat)
-        
-        geocrs = gpd.GeoDataFrame({'geometry':[geometry]}, crs='EPSG:4326').to_crs(epsg=8858)
-        distances = places.distance(geocrs.geometry.iloc[0])
-        near_city = places.iloc[distances.argmin()].copy()
-        near_dist = geocrs.distance(cities.loc[[city.name]].to_crs(epsg=8858).geometry.iloc[0]).iloc[0] / 1000
+        dists = distance(places,lat=lat,lon=lon) # works whenever xarray has (lat,lon).
+        near_ind = dists.argmin().item()
+        near_city = places.isel(index=near_ind)
+        near_dist = distance(near_city,lat=city.lat_raw,lon=city.lon_raw).item() / 1000.
+        #geocrs = gpd.GeoDataFrame({'geometry':[geometry]}, crs='EPSG:4326').to_crs(epsg=8858)
+        #distances = places.distance(geocrs.geometry.iloc[0])
+        #near_city = places.iloc[distances.argmin()].copy()
+        #near_dist = geocrs.distance(cities.loc[[city.name]].to_crs(epsg=8858).geometry.iloc[0]).iloc[0] / 1000
 
         if near_city.ADM0_A3 in ['USA', 'CAN']:
-            near_city['fullname'] = f"{near_city['NAME']}, {near_city['ADM1NAME']}"
+            near_city['fullname'] = f"{near_city['NAME'].item()}, {near_city['ADM1NAME'].item()}"
         else:
-            near_city['fullname'] = f"{near_city['NAME']}, {near_city['ADM0_A3']}"
+            near_city['fullname'] = f"{near_city['NAME'].item()}, {near_city['ADM0_A3'].item()}"
         
         percentile = get_score_percentile(score, climate_indices, benchmark)
         qflag = get_quality_flag(percentile=percentile)
@@ -158,7 +161,7 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city
                           lat   = lat,
                           lon   = lon,
                           simulation = sim.isel(realization=ireal).realization.item(), 
-                          near   = near_city['fullname'],
+                          near   = near_city['fullname'].item(),
                           near_dist   = near_dist,
                           density     = densityPt, 
                           geometry    = geometry, 
@@ -212,16 +215,16 @@ def _analogs_search( sim,
             i = diss.argmin().item()
         elif ns.best_analog_mode == 'closestN':
             diss = diss.sortby(diss).isel(site=slice(None, ns.num_bestanalogs))
-            dists = get_distances(diss.lon, diss.lat, ns.city.geometry)
+            dists = distance(diss, lat=ns.city.lat_raw,lon=ns.city.lon_raw)
             i = dists.argmin()
         elif ns.best_analog_mode == 'closestPer':
             perc_min = perc.min()
             if perc_min.isnull().item():
                 # Woups
                 continue
-            diss = diss.where(perc < perc_min + per_bestanalogs, drop=True)
+            diss = diss.where(perc < (perc_min + per_bestanalogs), drop=True)
             diss = diss.sortby(diss)
-            dists = get_distances(diss.lon, diss.lat, ns.city.geometry)
+            dists = distance(diss, lat=ns.city.lat_raw,lon=ns.city.lon_raw)
             i = dists.argmin()
 
         score = diss.isel(site=i)

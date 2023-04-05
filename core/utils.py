@@ -73,7 +73,7 @@ def get_score_percentile(score, indices, benchmark):
     if isinstance(score, xr.DataArray):
         return xr.apply_ufunc(
             np.interp,
-            score, dist, dist.percentiles,
+            score, dist, benchmark.percentiles,
             input_core_dims=[[], ['percentiles'], ['percentiles']],
             output_dtypes=[score.dtype],
             dask='parallelized',
@@ -92,11 +92,6 @@ def get_quality_flag(score=None, indices=None, benchmark=None, percentile=None):
     if isinstance(score, xr.DataArray):
         return score.copy(data=q).rename('quality_flag')
     return q
-
-def get_distances(lon, lat, geom):
-    df = gpd.GeoDataFrame(geometry=[Point(lo, la) for lo, la in zip(lon, lat)], crs=4326)
-    return df.to_crs(epsg=8858).distance(geom).values
-
 
 def dec2sexa(num, secfmt='02.0f'):
     """Get a sexadecimal sting from a float."""
