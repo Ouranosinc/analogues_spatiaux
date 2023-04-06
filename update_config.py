@@ -290,6 +290,11 @@ table.link-table tr {
   width: 280px;
 }
 
+#sidebar .bk-root .card select.bk-input,
+#sidebar .bk-root .card select.bk-input {
+  width: 260px !important;
+}
+
 .bk-root select:not([multiple]).bk-input:hover,
 .bk-root select:not([size]).bk-input:hover {
   box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.1);

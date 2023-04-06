@@ -14,15 +14,13 @@ quality_colors = ['#28a745', '#a9b5e4','#ffc107', '#fd7e14']  # Translated from 
 num_realizations = 12  # Number of realization included in the results
 max_real = 24
 
-best_analog_mode = 'closestPer'  # closestN or min, see below
-analog_modes = ['closestPer','closestN','min','clusterPer']
+best_analog_mode = 'min'  # closestN or min, see below
+analog_modes = ['closestPer','closestDens','min']
 num_bestanalogs = 10  # for closestN
 per_bestanalogs = 1  # for closestPer
 analog_modes_desc = {"en":[f"Closest to target within {per_bestanalogs}% of best",
-                           f"Closest to target within {num_bestanalogs} of best",
-                           f"Best analogue",
-                           f"Closest to eachother within {per_bestanalogs} percentile"],
+                           f"Closest to density of target within {per_bestanalogs}%",
+                           f"Best analogue"],
                      "fr":[f"Plus près de la cible dans le meilleur {per_bestanalogs}%",
-                           f"Plus près de la cible dans le meilleur {num_bestanalogs}",
-                           f"Meilleur analogue",
-                           f"Analogues les plus près d'eux-même, dans les meilleurs {per_bestanalogs}%."]}
+                           f"Plus près de la densité cible dans le meilleur {per_bestanalogs}%",
+                           f"Meilleur analogue"]}

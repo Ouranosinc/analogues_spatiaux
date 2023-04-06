@@ -213,10 +213,6 @@ def _analogs_search( sim,
 
         if ns.best_analog_mode == 'min':
             i = diss.argmin().item()
-        elif ns.best_analog_mode == 'closestN':
-            diss = diss.sortby(diss).isel(site=slice(None, ns.num_bestanalogs))
-            dists = distance(diss, lat=ns.city.lat_raw,lon=ns.city.lon_raw)
-            i = dists.argmin()
         elif ns.best_analog_mode == 'closestPer':
             perc_min = perc.min()
             if perc_min.isnull().item():
@@ -226,6 +222,16 @@ def _analogs_search( sim,
             diss = diss.sortby(diss)
             dists = distance(diss, lat=ns.city.lat_raw,lon=ns.city.lon_raw)
             i = dists.argmin()
+        elif ns.best_analog_mode == 'closestDens':
+            perc_min = perc.min()
+            if perc_min.isnull().item():
+                # Woups
+                continue
+            diss = diss.where(perc < (perc_min + per_bestanalogs), drop=True)
+            #diss = diss.sortby(diss)
+            diss['density'] = abs(density.sel(lat=diss.lat,lon=diss.lon) - ns.city.density)
+            #dists = distance(diss, lat=ns.city.lat_raw,lon=ns.city.lon_raw)
+            i = diss['density'].argmin()
 
         score = diss.isel(site=i)
         site = score.site.item()

@@ -2,8 +2,8 @@
 
 - __Density factor__: Changing this allows more or less cities within the search radius for analogues. Selecting more cities results a potentially more accurate result, but may take more time to locate the matches.
 
-- __Realization sorting__: This option allows you to choose how the realizations are ordered on the top of the results page. By default, they are ordered by a combination of both the analogue's quality and the realization's representativeness (see above). You may choose to order by only the analogue quality, or only the realization representativeness score, or the product of both.
+- __Show all analogies__: By default, realizations for which all analogues are of poor quality are not shown. This option overrides the default behaviour.
 
-- __Analogy ranking__: This option allows you to choose how the best analogue for each city is chosen. By default, the analogue closest to the target city, within 1% of the minimal analogue quality, is chosen. Other options include choosing an analogue closest to other analogues, an analogue furthest from other analogues, or an analogue closest to the target city's population density.
+- __Number of Simulations__: By default, 12 simulations are chosen, to get a good representative spread of the future climate. You may choose to increase this up to 24, or (not recommended) decrease this down to 6.
 
-- __Show all analogies__: By default, realizations for which all analogues are average or poor quality are not shown. This option overrides the default behaviour.
+- __Choice of Analogue__: This option allows you to choose how the best analogue for each city is chosen. By default, the analogue with the best score is chosen. Other options find analogues within 1 percentile of this optimum: the analogue which is closest to the target city or the analogue closest to the target city's population density.

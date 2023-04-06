@@ -2,7 +2,7 @@
 
 __Information sommaire__:
 
-- __Choix d'analogue__: Au dessus de la carte, il a jusqu'à 12 boutons qui laisse choisir la meilleur analogie climatique pour chaque réalization de l'ensemble de modèles. Par défaut, ils sont arrangés pour que la première analogue est une bonne représentation de sa réalization, et la réalization est une bonne représentation de la moyenne des ensembles. Ils sont colorés pour que les meilleurs analogues sont en verts.
+- __Choix d'analogue__: Au dessus de la carte, il a jusqu'à 12 boutons qui laisse choisir la meilleur analogie climatique pour chaque réalization de l'ensemble de modèles. Par défaut, ils sont arrangés pour que la première simulation est une bonne représentation de la moyenne des ensembles de simulations. Ils sont colorés pour que les meilleurs analogues sont en verts.
 
 - __Carte__: La carte montre tous les analogues comme points liés à la ville ciblé (étoile mauve). La couleur de chaque point est lié à la qualité des analogues.
 
@@ -16,4 +16,4 @@ __Information de variables__: Chaque variable montre trois graphiques: La compar
 
 - __Changement moyen__: Ce graphique montre le changement moyen de la variable en question, ainsi que les 10e, 25e, 75e et 90e centiles.
 
-- __Série temporelle__: Ce graphique montre la série temporelle complète de l'indice choisi pour la réalisation choisi, ainsi que les autres réalisations (en gris pâle). Il montre également le climat de l'analogue dans le présent, et ce-même décalé dans le futur, pour aider avec la comparaison.
+- __Série temporelle__: Ce graphique montre la série temporelle complète de l'indice choisi pour la réalisation choisi. Il montre également le climat de l'analogue dans le présent, et ce-même décalé dans le futur, pour aider avec la comparaison. Finalement, en gris, vous pouvez voir la médiane de l'ensemble des simulations, ainsi que ses 10e et 90e centiles.
