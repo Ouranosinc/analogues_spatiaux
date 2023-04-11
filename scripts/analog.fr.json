@@ -1,0 +1,82 @@
+{
+  "PRCPTOT": {
+    "long_name": "Précipitations totales",
+    "description": "Cumul annuel des précipitations (toutes les phases)."
+  },
+  "TX_MAX": {
+    "long_name": "Jour le plus chaud.",
+    "description": "Maximum annuel de la température maximale quotidienne."
+  },
+  "FROST_DAYS": {
+    "long_name": "Jours de gel",
+    "description": "Nombre annuel de jours avec une température minimale quotidienne en dessous de 0°C."
+  },
+  "GROWING_SEASON_LENGTH": {
+    "long_name": "Durée de la saison de croissance",
+    "description": "Nombre annuel de jours entre le premier et le dernier jours où la température moyenne quotidienne excède 0°C. La saison doit débuter avant et finir après le 1er juillet pour être valide."
+  },
+  "GROWING_DEGREE_DAYS_BASE5": {
+    "long_name": "Degrés-jours de croissance (5°C)",
+    "description": "Cumul annuel des degrés-jours de croissance, température de base de 5°C."
+  },
+  "HEATING_DEGREE_DAYS": {
+    "long_name": "Degrés-jours de chauffage",
+    "description": "Cumul annuel des degrés-jours de chauffage, température de base de 17°C."
+  },
+  "LAST_SPRING_FROST": {
+    "long_name": "Dernier gel printanier",
+    "description": "Dernier jour de l'année, avant le 1er juillet, où la température minimale quotidienne est sous 0°C."
+  },
+  "FIRST_FALL_FROST": {
+    "long_name": "Premier gel automnal",
+    "description": "Premier jour de l'année, après le 1er juillet, où la température minimale quotidienne est sous 0°C."
+  },
+  "analog.DEGREE_DAYS_BASE10": {
+    "long_name": "Degrés-jours de croissance (10°C)",
+    "description": "Cumul annuel des degrés-jours de croissance, température de base de 10°C."
+  },
+  "analog.DEGREE_DAYS_BASE0": {
+    "long_name": "Degrés-jours au-dessus de 0°C",
+    "description": "Cumul annuel des degrés-jours, température de base de 0°C."
+  },
+  "indicators.TG_MEAN": {
+    "long_name": "Température moyenne",
+    "description": "Moyenne annuelle de la température moyenne quotidienne."
+  },
+  "indicators.TN_MIN": {
+    "long_name": "Jour le plus froid",
+    "description": "Minimum annuel de la température minimale quotidienne."
+  },
+  "indicators.TX_DAYS_ABOVE_30": {
+    "long_name": "Jours avec Tmax > 30°C",
+    "description": "Nombre annuel de jours où la température maximale quotidienne excède 30°C."
+  },
+  "indicators.TX_DAYS_ABOVE_25": {
+    "long_name": "Jours avec Tmax > 25°C",
+    "description": "Nombre annuel de jours où la température maximale quotidienne excède 25°C."
+  },
+  "indicators.TROPICAL_NIGHTS_ABOVE_22": {
+    "long_name": "Nuits tropicales",
+    "description": "Nombre annuel de jour où la température minimale quotidienne excède 22°C."
+  },
+  "indicators.COOLING_DEGREE_DAYS_BASE18": {
+    "long_name": "Degrés-jours de climatisation",
+    "description": "Cumul annuel des degrés-jours de climatisation, température de base de 18°C."
+  },
+  "indicators.MAX_1DAY_PRECIPITATION_AMOUNT": {
+    "long_name": "Précipitation maximale en un jour",
+    "description": "Maximum annuel de la précipitation (toutes les phases)."
+  },
+  "indicators.WET_DAYS_ABOVE_20": {
+    "long_name": "Jours pluvieux",
+    "description": "Nombre annuel de jours où la précipitation excède 20 mm (toutes les phases)."
+  },
+  "indicators.MAX_5_DAY_PRECIPITATION_AMOUNT": {
+    "long_name": "Précipitation maximale en 5 jours",
+    "description": "Maximum annuel du cumul des précipitations sur 5 jours (toutes les phases)."
+  },
+  "indicators.ICE_DAYS": {
+    "long_name": "Jours de gel",
+    "description": "Nombre annuel de jours où la température maximale quotidienne est en dessous de 0°C."
+  }
+}
