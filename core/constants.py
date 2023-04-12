@@ -24,3 +24,9 @@ analog_modes_desc = {"en":[f"Closest to target within {per_bestanalogs}% of best
                      "fr":[f"Plus près de la cible dans le meilleur {per_bestanalogs}%",
                            f"Plus près de la densité cible dans le meilleur {per_bestanalogs}%",
                            f"Meilleur analogue"]}
+
+from pathlib import Path
+WRITE_DIR = Path('/notebook_dir/writable-workspace/analogues_spatiaux/')
+benchmark_path = WRITE_DIR / Path('benchmark.obj')
+density_path = WRITE_DIR /  Path('density.obj')
+cache_path = WRITE_DIR / Path('cache/')
