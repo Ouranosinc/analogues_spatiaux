@@ -11,7 +11,17 @@ import pandas as pd
 from shapely.geometry import Point
 import xarray as xr
 from xclim import analog as xa
-from .constants import num_bestanalogs, per_bestanalogs, best_analog_mode, num_realizations, quality_terms_en, quality_terms_fr, analog_modes, max_real
+from .constants import (
+    num_bestanalogs, 
+    per_bestanalogs, 
+    best_analog_mode, 
+    num_realizations, 
+    quality_terms_en, 
+    quality_terms_fr, 
+    analog_modes, 
+    max_real,
+    cache_path)
+
 from .utils import (
     get_quality_flag,
     get_score_percentile,
@@ -30,8 +40,7 @@ from .compress import (
 from clisops.core.subset import distance
 
 from joblib import Memory
-cachedir = "./cache/"
-mem = Memory(cachedir, verbose=0, bytes_limit=1e9, compress=9)
+mem = Memory(cache_path, verbose=0, bytes_limit=1e9, compress=9)
 logger = logging.getLogger('analogs')
 
 @mem.cache(ignore=["cities","dref","dsim"])
