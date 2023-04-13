@@ -14,13 +14,15 @@ from xclim import __version__ as xc_ver
 from pandas import __version__ as pd_ver
 from geopandas import __version__ as gp_ver
 from joblib import __version__ as jl_ver
+from core.constants import (benchmark_path, density_path, cache_path, config_path)
+
+import os
 
 from pathlib import Path
 import json
 
 from joblib import Memory
 
-config_path = Path('config.json')
 if not config_path.is_file():
     config = {}
 else:
@@ -36,9 +38,18 @@ if "versions" in config:
     if any([((k not in ver_old) or (ver_old[k] != ver_new[k])) for k in ver_new]):
         # delete cache, benchmark.obj, etc.
         print("versions differ! deleting cached data.")
-        get_ipython().system('rm "./cache/*"')
-        get_ipython().system('rm "benchmark.obj"')
-        get_ipython().system('rm "density.obj"')
+        try:
+            os.remove(benchmark_path)
+        except:
+            pass
+        try:
+            os.remove(density_path)
+        except:
+            pass
+        try:
+            os.rmdir(cache_path)
+        except:
+            pass
         
 config["versions"] = ver_new
 
