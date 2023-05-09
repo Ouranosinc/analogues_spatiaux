@@ -1,9 +1,9 @@
 ## Advanced options
 
-- __Density factor__: Changing this allows more or less cities within the search radius for analogues. Selecting more cities results a potentially more accurate result, but may take more time to locate the matches.
+- __Density factor__: This option allows the user to filter the analog cities according to their population density. The larger the density factor is, the more cities will be compared during the analog search. As the number of cities increases, the search time also increases.
 
-- __Show all analogies__: By default, realizations for which all analogues are of poor quality are not shown. This option overrides the default behaviour.
+- __Show all analogies__: By default, realizations with poor quality analogues are not shown. This option overrides the default behaviour.
 
-- __Number of Simulations__: By default, 12 simulations are chosen, to get a good representative spread of the future climate. You may choose to increase this up to 24, or (not recommended) decrease this down to 6.
+- __Number of Simulations__: By default, 12 climate simulations from different models are used to generate the analogues, in order to properly represent the uncertainties in the future climate simulations. You may choose to increase this up to 24, or (not recommended) decrease this down to 6.
 
-- __Choice of Analogue__: This option allows you to choose how the best analogue for each city is chosen. By default, the analogue with the best score is chosen. Other options find analogues within 1 percentile of this optimum: the analogue which is closest to the target city or the analogue closest to the target city's population density.
+- __Choice of Analogue__: This option allows the user to change the algorithm for the selection of the best analogue for each city and climate index. By default, the analogue with the best quality score is chosen. Other options obtain the closest analogue within the top 1 percentile, or the analogue with the population density closest to the target city.
