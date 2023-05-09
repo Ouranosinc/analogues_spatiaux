@@ -12,4 +12,4 @@ Population density was obtained from 4th version of the Gridded Population of th
 
 Generated using Copernicus Climate Change Service Information \[2022\].
 
-_The python code, notebooks and datafiles associated with this tool are provided AS IS and their usage is at the own risk of its user. Ouranos makes no warranties, expressed or implied, of merchantability and fitness for a particular purpose of the data or code, as well as of non-infringement of rights  of  others. Ouranos shall not be liable for damages or losses resulting from the use, application, or interpretation of the provided material._
+_The python code, jupyter notebooks and datafiles associated with this tool are provided AS IS and their usage is at the own risk of its user. Ouranos makes no warranties, expressed or implied, of merchantability and fitness for a particular purpose of the data or code, as well as of non-infringement of rights  of  others. Ouranos shall not be liable for damages or losses resulting from the use, application, or interpretation of the provided material._

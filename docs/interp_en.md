@@ -2,18 +2,18 @@
 
 __Summary Information__:
 
-- __Analogue Choice__: On top of the map, there are up to 12 button which show a climate analogue for each realization of the ensemble. By default, these are ordered so that the first  simulation is a good representation of the ensemble average. They are colored so that the best analogues are in green.
+- __Analogue Choice__: On top of the map, there are up to 12 button, each corresponding to a climate analogue. Each button represents a different climate model. By default, these are ordered so that the first representats the climate model closest to the ensemble average. The color of each button represents the quality of each analogue, green being an excellent analogy.
 
-- __Map__: The map shows all best analogues as a coloured dot linked to the target city (shown as a purple star). The colour of each dot is related to the quality of the analogue. Users may change the analogue with the buttons above the map.
+- __Map__: The map shows all analogues as coloured dots linked to the target city (shown as a purple star). The colour of each dot represents the quality of the analogue, green being an excellent analogy.
 
-- __Analogy Quality__: This quantity represents the rank of the analogue with respect to the chosen index combination. For example, if the score maps to the 50th percentile, there is a 50/50 chance of having a better analogue by choosing another random point within North Amarica. The button colours of each analogue represent their quality.
+- __Analogy Quality__: The quality represents the rank of the analogue with respect to the chosen climate index combination. For example, if the quality score maps to the 50th percentile, there is a 50/50 chance of having a better analogue by choosing another random point within North Amarica.
 
-- __Representativeness score__: This is a measure of how well a climate simulation is represented by the ensemble mean, and is unrelated to the quality of an analogy.
+- __Representativeness score__: This is a measure of the performance of the climate simulation in comparison to the ensemble mean, and is unrelated to the quality of an analogy.
 
-__Variable information__: Each variable shows three plots: the distribution comparison, the average change, and the full timeseries. They also each show the single variable comparison between the two 
+__Cimate indices__: Underneath the map, each selected climate index generates three plots: (1) the distribution comparison, (2) the average change, and (3) the full timeseries. Information on the quality of the analogy for each of these indices is also available.
 
-- __Distribution comparison__: This plot shows the approximate probablity distribution of the variable in the present, in the future, and the analogue's distribution in the present, for the chosen realization. It can help you decide if the analogue is appropriate or not.
+- __Distribution comparison__: This plot shows the probablity distribution of the variable in the present (white), and in the future (purple) for the targeted city, as well as the analogue's distribution in the present (yellow). It can help you decide if the analogue is appropriate or not.
 
-- __Average change__: This plot shows the average change of the variable in question, along with 10, 25, 75, and 90th percentiles.
+- __Average change__: This plot shows the average change of the variable in question, along with the 10, 25, 75, and 90th percentiles.
 
-- __Full timeseries__: This plot shows the full timeseries of the variable for the chosen realization. It also shows the analogue's climate in the present, and shifted forward into the future, to aid in comparison. Finally, it shows the median of the ensemble of simulations, as well as the 10th and 90th percentiles.
+- __Full timeseries__: This plot shows the full timeseries of the climate index in purple. It also shows the analogue's climate in the present (yellow). To aid in comparison, this curve is also shown in the future. Finally, in grey, the plot shows the median of the ensemble of simulations, as well as the 10th and 90th percentiles.
