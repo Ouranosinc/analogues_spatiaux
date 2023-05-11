@@ -5,11 +5,13 @@ climate change, because they allow us to see how certain regions are coping toda
 specific climate conditions which will occur elsewhere in the future.
 <br>
 <br>
+<br>
 For example, Québec City may see an increase in heat waves in the future. 
 As such, its municipal administration could learn from the experience and 
 expertise of Detroit, in the United States, where heat waves are already 
 more common, to prepare better-adapted intervention plans for 
 the future climate.
+<br>
 <br>
 <br>
 By using spatial analogs, cities and regions can better understand the future impacts of climate change and take measures to prepare for them.
