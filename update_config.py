@@ -192,6 +192,11 @@ body h3 {
    Fix for scrollbar being on top of modal... 
    put it on the left...
 */
+
+#sidebar::-webkit-scrollbar {
+  display: none;
+}
+
 #sidebar {
   direction:rtl;
 }
