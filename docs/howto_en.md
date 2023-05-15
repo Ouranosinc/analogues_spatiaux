@@ -12,4 +12,4 @@ a high emissions scenario (SSP5-8.5) and a moderate emissions scenario (SSP2-4.5
 5. Select between one and four climate indices. The future evolution of these 
 indices will be compared to the actual climate of other cities.
 
-6. Press the "Start new search" button. This search may take up to 30 seconds.
+6. Press the "Run analogues search" button. This search may take up to 30 seconds.
