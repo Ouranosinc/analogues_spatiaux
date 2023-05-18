@@ -80,10 +80,11 @@ class ColoredToggleGroup(Viewer):
             for i, f in enumerate(qflags, 1)
         ]
         super().__init__(**params)
-
+        self._watchers = []
+        
         for b in self._buttons:
-            b.param.watch(self.toggle, 'value')
-
+            self._watchers.append(b.param.watch(self.toggle, 'value'))
+        
         self._layout = FlexBox(*self._buttons)
 
     def __panel__(self):
@@ -96,5 +97,17 @@ class ColoredToggleGroup(Viewer):
                     self.value = i
                 elif b.value:
                     b.value = False
+                    
+    @param.depends('value',watch=True)                
+    def toggleSilent(self):
+      #trigger toggle event on button, but don't trigger the Toggle event (trigger internal ones tho!).
+      for i, b in enumerate(self._buttons):
+        b.param.unwatch(self._watchers[i])
+        if self.value == i:
+          b.value = True
+        else:
+          b.value = False
+        self._watchers[i] = b.param.watch(self.toggle,'value')
+          
 
     
