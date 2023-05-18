@@ -10,6 +10,10 @@ __Summary Information__:
 
 - __Representativeness score__: This is a measure of the performance of the climate simulation in comparison to the ensemble mean, and is unrelated to the quality of an analogy.
 
+- __Summary table__: This table shows summary information for the selected analogue, including the population density and the distance, in kilometres, to the target city.
+
+- __Data Export__: This section allows for the download of analogue data in a variety of different formats, including comma-separated values (.csv) and NetCDF (.nc).
+
 __Cimate indices__: Underneath the map, each selected climate index generates three plots: (1) the distribution comparison, (2) the average change, and (3) the full timeseries. Information on the quality of the analogy for each of these indices is also available.
 
 - __Distribution comparison__: This plot shows the probablity distribution of the variable in the present (white), and in the future (purple) for the targeted city, as well as the analogue's distribution in the present (yellow). It can help you decide if the analogue is appropriate or not.

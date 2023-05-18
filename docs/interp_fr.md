@@ -16,6 +16,10 @@ vert étant une excellente analogie.
 
 - __Score de représentativité__: Il s'agit d'une mesure de la performance de la simulation par rapport à la moyenne de l'ensemble, et n'est pas lié à la qualité de l'analogue.
 
+- __Tableau sommaire__: Ce tableau présente de l'information sommaire pour l'analogue choisi, incluant la densité de population et la distance, en kilomètres, à la ville cible.
+
+- __Exportation__: Cette section permet au téléchargement des données des analogues dans une variété de formats, incluant en _comma-separated values_ (.csv) ou en NetCDF (.nc)nd NetCDF (.nc).
+
 __Indices climatiques__: Au bas de la carte, chaque indice climatique sélectionné génère trois graphiques: (1) La comparaison des distributions, (2) le changement moyen, et (3) la série temporelle complète. Des informations sur la qualité de l’analogie pour chacun de ces indices est également disponible. 
 
 - __Comparaison des distributions__: Ce graphique montre la distribution des probabilités de l’indice climatique dans le présent (blanc) et dans le futur pour la ville ciblée (mauve), ainsi que la distribution dans le présent pour l’analogue choisi (jaune). Il peut vous aider à décider si l’analogue est approprié ou non.
