@@ -18,7 +18,7 @@ vert étant une excellente analogie.
 
 - __Tableau sommaire__: Ce tableau présente de l'information sommaire pour l'analogue choisi, incluant la densité de population et la distance, en kilomètres, à la ville cible.
 
-- __Exportation__: Cette section permet au téléchargement des données des analogues dans une variété de formats, incluant en _comma-separated values_ (.csv) ou en NetCDF (.nc)nd NetCDF (.nc).
+- __Exportation__: Cette section permet le téléchargement des données des analogues dans une variété de formats, incluant en _comma-separated values_ (.csv) ou en NetCDF (.nc).
 
 __Indices climatiques__: Au bas de la carte, chaque indice climatique sélectionné génère trois graphiques: (1) La comparaison des distributions, (2) le changement moyen, et (3) la série temporelle complète. Des informations sur la qualité de l’analogie pour chacun de ces indices est également disponible. 
 
