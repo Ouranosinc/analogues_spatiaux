@@ -16,6 +16,18 @@ from joblib import __version__ as jl_ver
 from pathlib import Path
 import json
 
+def color_convert_alpha(s):
+    ''' returns the same color s = '#rrggbb' when placed over a white background, but
+        maximizes the alpha value, to allow blending.
+    '''
+    s = s[1:]
+    colrgb = tuple([int(s[i:i+2],16) for i in range(0,len(s),2)])
+
+    alpha = (255 - min(colrgb)) / 255
+    cnew = [int((ci - min(colrgb)) / alpha) for ci in colrgb]
+    chex = '#%02x%02x%02x' % tuple(cnew)
+    return chex, alpha
+
 def check_version():
     """ returns true if the current versionfile is correct.
     """

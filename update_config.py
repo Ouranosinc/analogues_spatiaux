@@ -106,6 +106,11 @@ template_css = """
   --dark: #060d12;
   --gray-100: #f2f2f2;
   --gray-200: #eef0f5;
+  
+  --col-excellent: #50bb50;
+  --col-good: #509bdd;
+  --col-average: #ffd750;
+  --col-poor: #fd7e50;
   --font-family-sans-serif: "CDCSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -379,16 +384,16 @@ span[class^='rank-word-'], span[class*=' rank-word-'] {
 }
 
 .tg-excellent button {
-    background-color: var(--green) !important;
+    background-color: var(--col-excellent) !important;
 }
 .tg-good button {
-    background-color: var(--blue-light1) !important;
+    background-color: var(--col-good) !important;
 }
 .tg-average button {
-    background-color: var(--yellow) !important;
+    background-color: var(--col-average) !important;
 }
 .tg-poor button {
-    background-color: var(--orange) !important;
+    background-color: var(--col-poor) !important;
 }
 .tgx button {
     border-radius: 30px !important;

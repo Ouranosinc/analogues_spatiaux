@@ -9,7 +9,8 @@ ana_col = '#DAA520'  # The best analog at the reference period, goldenrod
 quality_thresholds = [1, 5, 10, 100]  # Upper percentile associated with the category (reference distributions only go up to the 20th percentile)
 quality_terms_en = ['Excellent', 'Good', 'Average', 'Poor']
 quality_terms_fr = ['Excellent','Bon','Moyen','Faible']
-quality_colors = ['#28a745', '#a9b5e4','#ffc107', '#fd7e14']  # Translated from matplotlib's : ['lightgreen', 'lightyellow', 'bisque', 'lightcoral']
+#quality_colors = ['#28a745', '#509bdd','#ffc107', '#fd7e14']  # Translated from matplotlib's : ['lightgreen', 'lightyellow', 'bisque', 'lightcoral']
+quality_colors = ['#50bb50', '#509bdd','#ffd750', '#fd7e50'] # chosen so the alpha-converted version is always around 0.7
 
 num_realizations = 12  # Number of realization included in the results
 max_real = 24
