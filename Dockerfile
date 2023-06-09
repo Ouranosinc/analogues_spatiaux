@@ -15,6 +15,8 @@ RUN pip install -r requirements_minimal.txt
 RUN apt update
 RUN apt install -y libtiff5
 
+RUN mkdir -p /notebook_dir/writable-workspace
+
 WORKDIR /
 
 COPY . app
