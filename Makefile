@@ -17,7 +17,7 @@ push-release:
 	docker push registry.gitlab.com/crim.ca/clients/ccdp/analogues-spatiaux:dev
 
 deploy-staging:
-	IAC_CONFIG=../analogues-spatiaux-iac/staging.yaml make -C ../iac-openstack iac-recreate-vm
+	IAC_CONFIG=../analogues-spatiaux-iac/staging.yaml make -C ../iac-openstack iac-update-stack
 
 build-deploy:
 	$(MAKE) build-release

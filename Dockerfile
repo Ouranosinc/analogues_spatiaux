@@ -18,6 +18,7 @@ RUN apt install -y libtiff5
 
 RUN pip install panel==0.12.7
 RUN pip install geoviews hvplot bokeh==2.4.3 pyogrio
+RUN pip install pandas==1.4.2
 
 WORKDIR /
 
