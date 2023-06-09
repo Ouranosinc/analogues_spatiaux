@@ -6,7 +6,8 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-RUN conda install cartopy netcdf4=1.5.6 && conda clean -afy
+# RUN conda install cartopy netcdf4=1.5.6 && conda clean -afy
+RUN conda install --channel conda-forge cartopy -y
 RUN conda install --channel conda-forge esmpy && conda clean -afy
 
 COPY ./requirements.txt /app/
