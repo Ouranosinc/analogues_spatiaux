@@ -63,3 +63,15 @@ results, but the Dashboard has been subject to some more iterations. The analog 
 code, however, should be identical.
 
 A lot more explanations are given in the step by step notebook.
+
+
+## Development
+
+In order to package a Docker container of the Climate Analogs app, make sure you add the required dependencies to `requirements_minimal.txt`.
+In contrast to `requirements.txt`, `requirements_minimal.txt` contains the strict minimal dependencies that the app needs.
+Then, run these commands to build and run the container:
+
+```
+make build-local
+make run-local
+```
