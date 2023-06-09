@@ -196,6 +196,10 @@ def _analogs_search( sim,
     """ This function computes the analogs search. 
         It isn't meant to be called directly, as you should use the wrapper, analogs, to compute extra variables efficiently
     """
+    
+    # change this value to invalidate the website cache on the next commit:
+    invalidate_cache = 1;
+    
     ns = SimpleNamespace(**full_args) # call variables passed to simplify_args with ns.[varname]
     # Compute the Zech-Aslan dissimiarity
     # We also keep the simulated and reference timeseries in memory for the graphs.

@@ -9,6 +9,8 @@ generated with an older version of what is here. For the same reason, the enviro
 file given here reflects the state of my conda environment at the moment of creating this
 repo and some packages may have different versions than when the data was generated.
 
+Link to Pavics site: https://pavics.ouranos.ca/analogues_spatiaux/Dashboard
+Link to CCDP staging: https://app-spatial-analogs-staging.climatedata.ca/analogs/Dashboard
 ## Structure
 
 ### Configuration

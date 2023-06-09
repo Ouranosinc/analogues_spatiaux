@@ -28,20 +28,6 @@ else:
         config = json.load(config_file)
     
 
-### VERSIONS:
-# check versions to delete or not the cache:
-ver_new = {"xa":xa_ver,"xc":xc_ver,"pd":pd_ver,"gp":gp_ver,"jl":jl_ver}
-if "versions" in config:
-    ver_old = config["versions"]
-    if any([((k not in ver_old) or (ver_old[k] != ver_new[k])) for k in ver_new]):
-        # delete cache, benchmark.obj, etc.
-        print("versions differ! deleting cached data.")
-        get_ipython().system('rm "./cache/*"')
-        get_ipython().system('rm "benchmark.obj"')
-        get_ipython().system('rm "density.obj"')
-        
-config["versions"] = ver_new
-
 ### GLOBAL OPTS:
 # Projection
 biasadjust = 'single' # only changes the dsim url at the moment.
@@ -206,6 +192,11 @@ body h3 {
    Fix for scrollbar being on top of modal... 
    put it on the left...
 */
+
+#sidebar::-webkit-scrollbar {
+  display: none;
+}
+
 #sidebar {
   direction:rtl;
 }
@@ -243,6 +234,7 @@ table.link-table tr {
 #container .bk-root {
   font-family: var(--font-family-sans-serif);
 }
+
 
 /* buttons */
 

@@ -118,14 +118,14 @@ lonmax = -48.
 umax = 65535
 scoremin = -50.
 scoremax = 50.
-zscale = 10.
+zscale = 1000.
 
 def _to_short(site,zscore,score,ilat,ilon):
     # transform lat from 0 to 1:
     #lat_to_norm = lambda lat : (lat - latmin) / (latmax - latmin)
     #lon_to_norm = lambda lon : (lon - lonmin) / (lonmax - lonmin)
-    zscore_to_norm = lambda zscore : zscore / zscale
-    score_to_norm  = lambda score : (score - scoremin) / (scoremax - scoremin)
+    zscore_to_norm = lambda zscore : min(zscore / zscale,1.0)
+    score_to_norm  = lambda score : max(min((score - scoremin) / (scoremax - scoremin),1.0),0.0)
 
     # transform lat from 0 to 65535 (ushort)
     

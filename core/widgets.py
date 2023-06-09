@@ -1,7 +1,7 @@
 # widgets.py
 from dask.diagnostics import ProgressBar
 from io import StringIO
-from panel import Row, Tabs
+from panel import FlexBox, Tabs
 from panel.viewable import Viewer
 from panel.widgets import Progress as _Progress, Toggle
 import param
@@ -75,16 +75,17 @@ class ColoredToggleGroup(Viewer):
                 value=(i == 1),
                 width_policy='fixed',
                 width=45,
-                margin=1
+                margin=(10,1,0,1)
             )
             for i, f in enumerate(qflags, 1)
         ]
         super().__init__(**params)
-
+        self._watchers = []
+        
         for b in self._buttons:
-            b.param.watch(self.toggle, 'value')
-
-        self._layout = Row(*self._buttons)
+            self._watchers.append(b.param.watch(self.toggle, 'value'))
+        
+        self._layout = FlexBox(*self._buttons)
 
     def __panel__(self):
         return self._layout
@@ -96,5 +97,17 @@ class ColoredToggleGroup(Viewer):
                     self.value = i
                 elif b.value:
                     b.value = False
+                    
+    @param.depends('value',watch=True)                
+    def toggleSilent(self):
+      #trigger toggle event on button, but don't trigger the Toggle event (trigger internal ones tho!).
+      for i, b in enumerate(self._buttons):
+        b.param.unwatch(self._watchers[i])
+        if self.value == i:
+          b.value = True
+        else:
+          b.value = False
+        self._watchers[i] = b.param.watch(self.toggle,'value')
+          
 
     

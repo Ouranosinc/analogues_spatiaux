@@ -5,7 +5,7 @@ import numpy as np
 from shapely.geometry import Point
 import xarray as xr
 from xclim import analog as xa
-from .constants import quality_thresholds, num_realizations
+from .constants import quality_thresholds, num_realizations, version_path
 
 from xarray import __version__ as xa_ver
 from xclim import __version__ as xc_ver
@@ -16,20 +16,26 @@ from joblib import __version__ as jl_ver
 from pathlib import Path
 import json
 
-def check_version(config):
-    """ returns true if the current config version is the most up to date.
+def check_version():
+    """ returns true if the current versionfile is correct.
     """
     ### VERSIONS:
     # check versions to delete or not the cache:
     ver_new = {"xa":xa_ver,"xc":xc_ver,"pd":pd_ver,"gp":gp_ver,"jl":jl_ver}
-    if "versions" in config:
-        ver_old = config["versions"]
-        if any([((k not in ver_old) or (ver_old[k] != ver_new[k])) for k in ver_new]):
-            return False
-        return True
-    else: # versions not in config, assume it is not up to date.
-        return False 
-        
+    ver_old = {}
+    if version_path.is_file():
+        with open(version_path,'r',encoding='utf-8') as version_file:
+            ver_old = json.load(version_file)
+    if any([((k not in ver_old) or (ver_old[k] != ver_new[k])) for k in ver_new]):
+        return False
+    else:
+        return True 
+    
+def update_versions():
+    # versionfile:
+    ver_new = {"xa":xa_ver,"xc":xc_ver,"pd":pd_ver,"gp":gp_ver,"jl":jl_ver}
+    with open(version_path,'w',encoding='utf-8') as version_file:
+        json.dump(ver_new,version_file, ensure_ascii=False, indent=4)
 
 def open_thredds(url):
     """Open netCDF files on thredds and decode the string variables."""
