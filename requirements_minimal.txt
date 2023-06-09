@@ -1,0 +1,16 @@
+clisops
+dask
+geopandas
+intake
+joblib
+jupyter
+matplotlib
+numpy
+pandas
+panel
+param
+PyYAML
+Shapely
+xarray
+xclim
+xesmf
