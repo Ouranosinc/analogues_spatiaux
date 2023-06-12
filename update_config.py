@@ -297,6 +297,10 @@ table.link-table tr {
   box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.1);
 }
 
+.bk-root .choices__list--dropdown .choices__item--selectable::after {
+    content: "";
+}
+
 /* autocomplete */
 
 #sidebar .bk-root .choices__inner {
