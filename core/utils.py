@@ -73,7 +73,26 @@ def inplace_compute(*df):
             dfi.update(df_comp[i])
         else: # DataArray, not Dataset
             dfi.data = df_comp[i].data
+
+def getmask(density,density_factor,tg_density,minpts,maxpts,mindensity):
+    tg_density = max(tg_density,mindensity)
     
+    with np.errstate(divide='ignore'):
+        dsabs = np.abs(np.log10(density/tg_density))
+    dsabs_1d = dsabs.stack({'site':('lat','lon')})
+    dsabs_1d = dsabs_1d.sortby(dsabs_1d)
+    
+    ds_minpt = dsabs_1d.isel(site=minpts).item() > dsabs
+    ds_maxpt = dsabs_1d.isel(site=maxpts).item() > dsabs
+    
+    ds_lower = density > max((tg_density / density_factor),mindensity)
+    ds_upper = density < max((tg_density * density_factor),mindensity)
+    
+    mask  = (ds_lower & ds_upper) # all points that are in the range
+    mask &= ds_maxpt # stop at 10000 closest points.
+    mask |= ds_minpt # add closest 500 pts, if not already there.
+    
+    return mask
 def stack_drop_nans(ds, mask):
     """Stack dimensions into a single axis 'site' and drops indexes where the mask is false."""
     mask_1d = mask.stack(site=mask.dims).reset_index('site').drop_vars(mask.coords.keys())

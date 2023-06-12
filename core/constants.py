@@ -12,6 +12,10 @@ quality_terms_fr = ['Excellent','Bon','Moyen','Faible']
 #quality_colors = ['#28a745', '#509bdd','#ffc107', '#fd7e14']  # Translated from matplotlib's : ['lightgreen', 'lightyellow', 'bisque', 'lightcoral']
 quality_colors = ['#50bb50', '#509bdd','#ffd750', '#fd7e50'] # chosen so the alpha-converted version is always around 0.7
 
+min_density = 10 # minimum density to consider
+minpts =   500 # minimum size of search space (closest density priority)
+maxpts = 10000 # maximum size of search space
+
 num_realizations = 12  # Number of realization included in the results
 max_real = 24
 

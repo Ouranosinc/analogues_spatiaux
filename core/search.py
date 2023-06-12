@@ -20,7 +20,10 @@ from .constants import (
     quality_terms_fr, 
     analog_modes, 
     max_real,
-    cache_path)
+    cache_path,
+    minpts,
+    maxpts,
+    min_density)
 
 from .utils import (
     get_quality_flag,
@@ -29,7 +32,8 @@ from .utils import (
     stack_drop_nans,
     _zech_aslan,
     inplace_compute,
-    is_computed
+    is_computed,
+    getmask
 )
 
 from .compress import (
@@ -79,7 +83,8 @@ def analogs( dsim,
              tgt_period,periods,
              ssp,ssp_list,
              best_analog_mode=best_analog_mode, analog_modes=analog_modes,
-             num_realizations=num_realizations, max_real=max_real):
+             num_realizations=num_realizations, max_real=max_real,
+             minpts=minpts,maxpts=maxpts,mindensity=min_density):
     """ This function handles computation of the analogs search function"""
     sim = dsim[climate_indices].isel(location=city.location).sel(ssp=ssp).isel(realization=slice(0, num_realizations))
     
@@ -95,7 +100,7 @@ def analogs( dsim,
     
     analogDF = None
     
-    mask = (density < (city.density * density_factor)) & (density > max(city.density / density_factor, 10))
+    mask = getmask(density,density_factor,city.density,minpts,maxpts,mindensity)
     ref = stack_drop_nans(dref[climate_indices], mask).chunk({'site': 100})
     in_cache = _analogs_search.check_call_in_cache(sim,
                                    ref,
