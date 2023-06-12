@@ -58,7 +58,7 @@ def get_unusable_indices(cities, dref, dsim, iloc, ssp, tgt_period):
     """
     city = cities.iloc[iloc]
     ref = (dref.sel(lat=city.geometry.y, lon=city.geometry.x).std('time') == 0)
-    sim = dsim.isel(location=iloc, realization=slice(0, num_realizations)).sel(ssp=ssp)
+    sim = dsim.isel(location=city.location, realization=slice(0, num_realizations)).sel(ssp=ssp)
     simh = (sim.sel(time=slice('1991', '2020')).std('time') == 0).any('realization')
     simf = (sim.sel(time=tgt_period).std('time') == 0).any('realization')
     with ProgressBar():
