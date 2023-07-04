@@ -1,16 +1,4 @@
 # search.py
-import dask
-from dask.diagnostics import ProgressBar
-
-import geopandas as gpd
-from itertools import combinations
-import logging
-from multiprocessing import Pool
-import numpy as np
-import pandas as pd
-from shapely.geometry import Point
-import xarray as xr
-from xclim import analog as xa
 from .constants import (
     num_bestanalogs, 
     per_bestanalogs, 
@@ -33,7 +21,10 @@ from .utils import (
     _zech_aslan,
     inplace_compute,
     is_computed,
-    getmask
+    getmask,
+    load_dsim,
+    load_dref,
+    load_cities,
 )
 
 from .compress import (
@@ -41,21 +32,32 @@ from .compress import (
     _to_short,
     _to_float
 )
-from clisops.core.subset import distance
 
+import logging
 from joblib import Memory
 mem = Memory(cache_path, verbose=0, bytes_limit=1e9, compress=9)
 logger = logging.getLogger('analogs')
-
+    
 @mem.cache(ignore=["cities","dref","dsim"])
-def get_unusable_indices(cities, dref, dsim, iloc, ssp, tgt_period):
+def get_unusable_indices(iloc, ssp, tgt_period, dsim=None,dref=None,cities=None):
     """Return a set of indices that are not usable for this combination of city, scenario and target period.
 
     This simply tests that the standard deviation is null over any realization on the reference period or the target period,
     or over the reference.
     
     To speed up the check, it uses cached variables.
+    
+    If dsim and dref are not given, loads them into global variables.
     """
+    import dask
+    from dask.diagnostics import ProgressBar
+    
+    if dsim is None:
+        dsim = load_dsim()
+    if dref is None:
+        dref = load_dref()
+    if cities is None:
+        cities = load_cities()
     city = cities.iloc[iloc]
     ref = (dref.sel(lat=city.geometry.y, lon=city.geometry.x).std('time') == 0)
     sim = dsim.isel(location=city.location, realization=slice(0, num_realizations)).sel(ssp=ssp)
@@ -86,6 +88,7 @@ def analogs( dsim,
              num_realizations=num_realizations, max_real=max_real,
              minpts=minpts,maxpts=maxpts,mindensity=min_density):
     """ This function handles computation of the analogs search function"""
+    import numpy as np
     sim = dsim[climate_indices].isel(location=city.location).sel(ssp=ssp).isel(realization=slice(0, num_realizations))
     
     all_indices = [x.name for k,x in dsim.data_vars.items()]
@@ -139,6 +142,10 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city
         These additional variables are lookups, may produce large variables, but are fast to compute.
         Thus, they are not cached with _analogs_search."""
     analogDF = []
+    from clisops.core.subset import distance
+    from shapely.geometry import Point
+    import geopandas as gpd
+    
     for ireal,analog in enumerate(analogs):
         # unpack analog array:
         site,zscore,score,ilat,ilon = analog
@@ -189,7 +196,7 @@ def _compute_analog_vars(analogs, climate_indices, benchmark, density, sim, city
     analogDF['rank'] = analogDF.index + 1
     return analogDF
 
-from types import SimpleNamespace
+
 @mem.cache(ignore=["sim","ref","benchmark","cities","full_args","density"])               
 def _analogs_search( sim,
                      ref,
@@ -201,6 +208,11 @@ def _analogs_search( sim,
     """ This function computes the analogs search. 
         It isn't meant to be called directly, as you should use the wrapper, analogs, to compute extra variables efficiently
     """
+    import numpy as np
+    from clisops.core.subset import distance
+    from xclim import analog as xa
+    import dask
+    from types import SimpleNamespace
     
     # change this value to invalidate the website cache on the next commit:
     invalidate_cache = 1;
@@ -295,6 +307,11 @@ def montecarlo_distribution(ds, mask, maxindicators=5, couples=200000, workers=4
       The quantized distributions, the indicator combinations are along `indices`,
       with the names joined by underscores in alphabetical order.
     """
+    import xarray as xr
+    from multiprocessing import Pool
+    from itertools import combinations
+    import pandas as pd
+    import numpy as np
     logger.info(f'Loading data where mask is True.')
     ds = stack_drop_nans(ds, mask).drop_vars(['lat', 'lon'])
     ds = ds.to_array('indices').transpose('site', 'time', 'indices')
