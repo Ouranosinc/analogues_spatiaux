@@ -23,11 +23,11 @@ best_analog_mode = 'min'  # closestN or min, see below
 analog_modes = ['closestPer','closestDens','min']
 num_bestanalogs = 10  # for closestN
 per_bestanalogs = 1  # for closestPer
-analog_modes_desc = {"en":[f"Closest to target within {per_bestanalogs}% of best",
-                           f"Closest to density of target within {per_bestanalogs}%",
+analog_modes_desc = {"en":[f"Closest to location of target city within {per_bestanalogs} percentile of best analogue",
+                           f"Closest to density of target city within {per_bestanalogs} percentile of best analogue",
                            f"Best analogue"],
-                     "fr":[f"Plus près de la cible dans le meilleur {per_bestanalogs}%",
-                           f"Plus près de la densité cible dans le meilleur {per_bestanalogs}%",
+                     "fr":[f"Plus près de l'emplacement de la ville cible d'au plus {per_bestanalogs} centile du meilleur analogue",
+                           f"Plus près de la densité de la ville cible d'au plus {per_bestanalogs} centile du meilleur analogue",
                            f"Meilleur analogue"]}
 
 from pathlib import Path
