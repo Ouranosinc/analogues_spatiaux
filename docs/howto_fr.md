@@ -2,12 +2,12 @@
 1. Pour débuter une nouvelle recherche, utilisez la barre «Débuter une nouvelle 
 recherche» située à gauche. 
 
-2. De ce menu, choisissez une ville parmi une liste de 65 villes canadiennes.
+2. D'ici, choisissez une ville parmi une liste de 65 villes canadiennes.
 
 3. Choisissez l'un des deux scénarios d'émissions futures : 
-un scénario à émissions élevées (SSP5-8.5) et un scénario à émissions modérées (SSP2-4.5).
+un scénario à émissions élevées (SSP5-8.5) ou un scénario à émissions modérées (SSP2-4.5).
 
-4. Choisissez une période future de 30 ans, se terminant entre le présent 
+4. Choisissez une période future de 30 ans, se terminant entre 2020 
 et 2100.
 
 5. Sélectionnez de 1 à 4 indices climatiques qui vous intéressent. 
