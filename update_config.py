@@ -122,7 +122,7 @@ template_css = """
 */
 
 html body {
-  font-family: var(--font-family-sans-serif);
+  font-family: var(--font-family-sans-serif) !important;
   font-weight: 300;
   color: #212529;
   -webkit-font-smoothing: antialiased;
@@ -142,6 +142,9 @@ body h3 {
   
 }
 
+.bk-root {
+  font-size: 14px;
+}
 
 /*
 
@@ -168,7 +171,7 @@ body h3 {
 }
 
 #sidebar .nav .bk-root {
-  border-bottom: 1px solid #ddd;
+  /* border-bottom: 1px solid #ddd; */
   padding-bottom: 0rem;
   margin-bottom: 0rem;
   height: 100%;
@@ -216,10 +219,11 @@ body h3 {
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
-/*
 
+
+
+/*
   COMPONENTS
-  
 */
 
 table.link-table {
@@ -284,12 +288,18 @@ table.link-table tr {
   border-color: var(--primary);
   transition: 0.25s;
   padding: 5px 10px;
-  width: 280px;
+  max-width: 280px;
 }
 
-#sidebar .bk-root .card select.bk-input,
-#sidebar .bk-root .card select.bk-input {
-  width: 260px !important;
+#sidebar .bk-root .card .bk.noUi-target {
+  box-sizing: border-box;
+  height: 10px;
+  max-width: 260px !important;
+}
+#sidebar .bk-root .card .bk-input {
+  box-sizing: border-box;
+  height: 45px;
+  max-width: 260px !important;
 }
 
 .bk-root select:not([multiple]).bk-input:hover,
@@ -319,6 +329,10 @@ table.link-table tr {
   background-color: var(--slate1);
 }
 
+/* remove "at most 1 values selectable" - not translatable easily */
+#sidebar .choices__item.choices__item--choice:not(.choices__item--selectable) {
+  display: none;
+}
 
 /* spinner */
 
@@ -345,6 +359,7 @@ progress.success:not([value])::before {
 progress::-webkit-progress-value {
   background-color: var(--primary);
 }
+
 
 /* modal close button */
 .pn-modalclose {
