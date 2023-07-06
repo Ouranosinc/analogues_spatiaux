@@ -126,15 +126,9 @@ def color_convert_alpha(s):
 
 def check_pip_version(pkgs):
     '''returns a dictionary of packages {pkg_name:version}, as returned by pip list.'''
-    if type(pkgs) is str:
-        pkgs = [pkgs]
-    import subprocess
-    sts = '\|^'.join(pkgs)
-    shell_str = "pip list | grep '^%s' | awk '{print $1,$2}'"  % sts
-    shell_out = subprocess.check_output(shell_str, shell=True)
-    shell_parse = shell_out.decode().split('\n')[:-1] # decode into 'pkg ver\npkg ver\n', split into ['pkg ver', 'pkg ver', ''], drop last 
-    vers = dict([k.split() for k in shell_parse])
-    return vers
+    # thanks Trevor! this speeds it up immensely.
+    import importlib
+    return {k:importlib.metadata.version(k) for k in pkgs}
 
 def get_old_version():
     """ returns true if the current versionfile is correct.
