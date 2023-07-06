@@ -10,6 +10,6 @@ a high emissions scenario (SSP5-8.5) or a moderate emissions scenario (SSP2-4.5)
 4. Choose a future 30-year period, ending between 2020 and 2100.
 
 5. Select between one and four climate indices. The future evolution of these 
-indices will be compared to the actual climate of other cities.
+indices will be compared to the actual climate of other cities. Note that some indices are unavailable for northern cities.
 
 6. Press the "Run analogues search" button. This search may take up to 30 seconds.

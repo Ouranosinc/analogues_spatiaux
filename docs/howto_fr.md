@@ -12,7 +12,7 @@ et 2100.
 
 5. Sélectionnez de 1 à 4 indices climatiques qui vous intéressent. 
 L'évolution future de ces indices climatique sera comparée au climat actuel 
-d'autres villes.
+d'autres villes. Notez que certains indices sont indisponible pour les villes du Nord.
 
 6. Cliquez sur «Exécuter la recherche d'analogues». Il 
 se peut que cette recherche prenne jusqu'à 30 secondes.
