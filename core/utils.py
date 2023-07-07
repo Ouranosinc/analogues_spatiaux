@@ -283,9 +283,43 @@ def dec2sexa(num, secfmt='02.0f'):
 def n_combinations(n, k):
     ''' much more efficient than factorials: '''
     from math import comb
-    return math.comb(n,k)
+    return comb(n,k)
 
 
 def _zech_aslan(inputs):
     from xclim import analog as xa
     return xa.zech_aslan(inputs[0], inputs[1])
+
+from .constants import max_na
+def is_valid(ds,maxna=max_na):
+    '''
+    Returns true if the timeseries has less than or equal to maxna NaN values.
+    '''
+    import xarray as xr
+    import numpy as np
+    def num_valid(*args,axis):
+        s = np.full(args[0].shape,False)
+        for arg in args:
+            s |= ~np.isfinite(arg)
+        return np.sum(s,axis=axis)
+    if isinstance(ds,xr.Dataset):
+         
+        return (xr.apply_ufunc(num_valid,
+                   *[ds[i] for i in ds.data_vars],
+                   input_core_dims=[['time']]*len(ds.data_vars),
+                   kwargs={"axis":-1}) <= maxna)
+    elif isinstance(ds,xr.DataArray):
+        return (xr.apply_ufunc(num_valid,
+                   ds,
+                   input_core_dims=[['time']],
+                   kwargs={"axis":-1}) <= maxna)
+
+def get_valid(ds,maxna=max_na):
+    '''
+    Returns the ds with the time axis dropping NaNs if num nans < maxna.
+    Otherwise throws ValueError
+    '''
+    if is_valid(ds,maxna):
+        return ds.dropna('time',how='any')
+    else:
+        raise ValueError(f'ds contains more than {maxna} NaN values.')

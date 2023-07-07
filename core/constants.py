@@ -19,6 +19,8 @@ maxpts = 10000 # maximum size of search space
 num_realizations = 12  # Number of realization included in the results
 max_real = 24
 
+max_na = 5
+
 best_analog_mode = 'min'  # closestN or min, see below
 analog_modes = ['closestPer','closestDens','min']
 num_bestanalogs = 10  # for closestN
