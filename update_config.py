@@ -168,6 +168,7 @@ body h3 {
   background-color: var(--gray-100);
   padding-left: 0px;
   padding-right: 0px;
+  z-index: 1;
 }
 
 #sidebar .nav .bk-root {
@@ -199,7 +200,7 @@ body h3 {
 /* 
    Fix for scrollbar being on top of modal... 
    put it on the left...
-*/
+
 
 #sidebar::-webkit-scrollbar {
   display: none;
@@ -213,7 +214,7 @@ body h3 {
   direction:ltr;
   width:100%;
 }
-
+*/
 #sidebar .flex-sidebar>div>.bk {
   width: 100%;
   margin-left: 0 !important;
