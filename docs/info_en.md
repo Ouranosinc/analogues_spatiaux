@@ -14,4 +14,4 @@ the future climate.
 <br>
 <br>
 <br>
-By using spatial analogs, cities and regions can better understand the future impacts of climate change and take measures to prepare for them.
+By using spatial analogues, cities and regions can better understand the future impacts of climate change and take measures to prepare for them.
