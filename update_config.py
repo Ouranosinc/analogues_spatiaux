@@ -382,19 +382,19 @@ span.quality-word {
 }
 
 span.quality-word.Excellent {
-  color: var(--green);
+  color: var(--col-excellent);
 }
 
 span.quality-word.Good {
-  color: var(--blue-light1);
+  color: var(--col-good);
 }
 
 span.quality-word.Average {
-  color: var(--yellow);
+  color: var(--col-average);
 }
 
 span.quality-word.Poor {
-  color: var(--orange);
+  color: var(-col-poor);
 }
 
 span[class^='rank-word-'], span[class*=' rank-word-'] {
