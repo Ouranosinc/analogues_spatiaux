@@ -17,4 +17,4 @@ geoviews
 hvplot
 bokeh==2.4.3
 pyogrio
-pandas==1.4.2
+pandas
