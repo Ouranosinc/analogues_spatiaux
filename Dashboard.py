@@ -1049,8 +1049,13 @@ w_enter_fr.on_click(close_modal_set_french)
 
 # In[ ]:
 
-
-pn.state.schedule_task('check_versions',utils.check_version_delete_cache,period='1w')
+if hasattr(pn.state,'schedule_task'):
+    pn.state.schedule_task('check_versions',utils.check_version_delete_cache,period='1w')
+else:
+    # run once:
+    import warnings
+    warnings.warn('Cannot schedule task: check_versions. Running once. Have you double checked the panel version?')
+    pn.state.onload(utils.check_version_delete_cache)
 pn.state.onload(update_handled)
 update_time("time to serve: ")
 
