@@ -5,13 +5,17 @@ FROM continuumio/miniconda3
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
-
-RUN conda install cartopy netcdf4=1.5.6 && conda clean -afy
+RUN conda install python=3.9
+RUN conda install --channel conda-forge cartopy -y
 RUN conda install --channel conda-forge esmpy && conda clean -afy
 
-COPY ./requirements.txt /app/
+COPY ./requirements_minimal.txt /app/
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements_minimal.txt
+RUN apt update
+RUN apt install -y libtiff5
+
+RUN mkdir -p /notebook_dir/writable-workspace
 
 WORKDIR /
 
@@ -21,4 +25,5 @@ WORKDIR /app
 
 EXPOSE 5006
 
-ENTRYPOINT ["panel", "serve", "Dashboard.py", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug", "--static-dirs fonts=./fonts"]
+ENTRYPOINT ["panel", "serve", "Dashboard.py", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug", "--static-dirs", "fonts=./fonts"]
+

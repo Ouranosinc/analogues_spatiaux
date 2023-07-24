@@ -1,8 +1,8 @@
 serve:
-	panel serve Dashboard.ipynb --prefix analogs --autoreload --log-level=debug --static-dirs fonts=./fonts
+	panel serve Dashboard.py --prefix analogs --autoreload --log-level=debug --static-dirs fonts=./fonts
 
 profile:
-	panel serve Dashboard.ipynb --prefix analogs --autoreload --log-level=debug --admin --profiler snakeviz --static-dirs fonts=./fonts
+	panel serve Dashboard.py --prefix analogs --autoreload --log-level=debug --admin --profiler snakeviz --static-dirs fonts=./fonts
 
 build-local:
 	docker build -t analogues-spatiaux:dev .
@@ -17,7 +17,7 @@ push-release:
 	docker push registry.gitlab.com/crim.ca/clients/ccdp/analogues-spatiaux:dev
 
 deploy-staging:
-	IAC_CONFIG=../analogues-spatiaux-iac/staging.yaml make -C ../iac-openstack iac-recreate-vm
+	IAC_CONFIG=../analogues-spatiaux-iac/staging.yaml make -C ../iac-openstack iac-update-stack
 
 build-deploy:
 	$(MAKE) build-release
