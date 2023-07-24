@@ -1064,6 +1064,10 @@ update_time("time to serve: ")
 
 # In[ ]:
 
+js_files = {
+    "main": "./scripts/main.js"
+}
+pn.extension(js_files=js_files)
 
 # s = dash.show(port=9093, websocket_origin='*')
 dash.servable()
