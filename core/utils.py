@@ -131,7 +131,6 @@ def check_pip_version(pkgs):
         from importlib import metadata
     except ImportError: # for Python<3.8, or bokeh < 3.0.2
         import importlib_metadata as metadata
-    __version__ = metadata.version("jsonschema")
     return {k:metadata.version(k) for k in pkgs}
 
 def get_old_version():
