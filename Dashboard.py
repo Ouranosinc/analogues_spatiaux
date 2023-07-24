@@ -33,7 +33,7 @@ app_title = {"en":"Climate Analogues","fr":"Analogues climatiques"}
 
 LOCALE = "en"
 qd = {}
-if pn.state.location:
+if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location and hasattr(pn.state.location,'query_params'):
     qd = pn.state.location.query_params
 if ('lang' in qd) and (qd['lang'] in ['en','fr']):
     LOCALE = qd['lang']
