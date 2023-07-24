@@ -5,24 +5,23 @@ __Information sommaire__:
 - __Choix d'analogue__: Au-dessus de la carte apparaîtrons jusqu'à 12 
 pastilles correspondant chacune à une ville au climat analogue. 
 Chaque pastille représente un modèle climatique différent. 
-Par défaut, ces pastilles sont classées en ordre croissant,
-la première représentant le modèle climatique le plus près de la moyenne
-de l'ensemble des simulations. La couleur des pastilles représente la qualité de l'analogie,
+Par défaut, ces pastilles sont classées en ordre croissant basé sur une balance entre la qualité de chaque analogue, et la représentativité de chaque simulation.
+La couleur des pastilles représente la qualité de l'analogie,
 vert étant une excellente analogie.
 
 - __Carte__: La carte montre tous les analogues comme points liés à la ville ciblée (étoile mauve). La couleur de chaque point représente la qualité des analogues, vert étant une excellente analogie.
 
-- __Qualité de l'analogie__: La qualité représente le rang des analogues par rapport à la combinaison des indices climatiques choisis. Par exemple, si le score de qualité est équivalent au 50e centile, il y a une chance de 50% qu'un autre point, choisi au hazard dans l'Amérique du Nord, sera un meilleur analogue.
+- __Qualité de l'analogie__: La qualité représente le rang des analogues par rapport à la combinaison des indices climatiques choisis. Par exemple, si le score de qualité est équivalent au 10e centile, il y a une chance de 10 % qu'un autre point, choisi au hazard dans l'Amérique du Nord, sera un meilleur analogue. Les détails du calcul de ce score de qualité est disponible dans le rapport en annexe à cette page d'aide.
 
-- __Score de représentativité__: Il s'agit d'une mesure de la performance de la simulation par rapport à la moyenne de l'ensemble, et n'est pas lié à la qualité de l'analogue.
+- __Score de représentativité__: Il s'agit d'une mesure de la performance de la simulation par rapport à la moyenne de l'ensemble, et n'est pas lié à la qualité de l'analogue. Plus ce score est faible, plus le modèle est proche de la moyenne d'ensemble. Il est possible, par exemple, d'avoir un modèle représentatif avec un mauvais analogue, car celui-ci est indépendant de la qualité de l'analogie.
 
 - __Tableau sommaire__: Ce tableau présente de l'information sommaire pour l'analogue choisi, incluant la densité de population et la distance, en kilomètres, à la ville cible.
 
 - __Exportation__: Cette section permet le téléchargement des données des analogues dans une variété de formats, incluant en _comma-separated values_ (.csv) ou en NetCDF (.nc).
 
-__Indices climatiques__: Au bas de la carte, chaque indice climatique sélectionné génère trois graphiques: (1) La comparaison des distributions, (2) le changement moyen, et (3) la série temporelle complète. Des informations sur la qualité de l’analogie pour chacun de ces indices est également disponible. 
+__Indices climatiques__: Au bas de la carte, chaque indice climatique sélectionné génère trois graphiques lorsque cliqué dessu: (1) La comparaison des distributions, (2) le changement moyen, et (3) la série temporelle complète. Des informations sur la qualité de l’analogie pour chacun de ces indices est également disponible. 
 
-- __Comparaison des distributions__: Ce graphique montre la distribution des probabilités de l’indice climatique dans le présent (blanc) et dans le futur pour la ville ciblée (mauve), ainsi que la distribution dans le présent pour l’analogue choisi (jaune). Il peut vous aider à décider si l’analogue est approprié ou non.
+- __Comparaison des distributions__: Ce graphique montre la distribution des probabilités de l’indice climatique dans le présent (blanc avec zône hachurée mauve) et dans le futur pour la ville ciblée (mauve), ainsi que la distribution dans le présent pour l’analogue choisi (jaune). Il peut vous aider à décider si l’analogue est approprié ou non.
 
 - __Changement moyen__: Ce graphique montre le changement moyen de l’indice en question, ainsi que les 10e, 25e, 75e et 90e centiles.
 

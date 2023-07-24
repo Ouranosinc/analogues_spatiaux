@@ -106,6 +106,11 @@ template_css = """
   --dark: #060d12;
   --gray-100: #f2f2f2;
   --gray-200: #eef0f5;
+  
+  --col-excellent: #50bb50;
+  --col-good: #509bdd;
+  --col-average: #ffd750;
+  --col-poor: #fd7e50;
   --font-family-sans-serif: "CDCSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -117,7 +122,7 @@ template_css = """
 */
 
 html body {
-  font-family: var(--font-family-sans-serif);
+  font-family: var(--font-family-sans-serif) !important;
   font-weight: 300;
   color: #212529;
   -webkit-font-smoothing: antialiased;
@@ -137,6 +142,9 @@ body h3 {
   
 }
 
+.bk-root {
+  font-size: 14px;
+}
 
 /*
 
@@ -160,10 +168,11 @@ body h3 {
   background-color: var(--gray-100);
   padding-left: 0px;
   padding-right: 0px;
+  z-index: 1;
 }
 
 #sidebar .nav .bk-root {
-  border-bottom: 1px solid #ddd;
+  /* border-bottom: 1px solid #ddd; */
   padding-bottom: 0rem;
   margin-bottom: 0rem;
   height: 100%;
@@ -191,7 +200,7 @@ body h3 {
 /* 
    Fix for scrollbar being on top of modal... 
    put it on the left...
-*/
+
 
 #sidebar::-webkit-scrollbar {
   display: none;
@@ -205,16 +214,17 @@ body h3 {
   direction:ltr;
   width:100%;
 }
-
+*/
 #sidebar .flex-sidebar>div>.bk {
   width: 100%;
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
-/*
 
+
+
+/*
   COMPONENTS
-  
 */
 
 table.link-table {
@@ -279,17 +289,27 @@ table.link-table tr {
   border-color: var(--primary);
   transition: 0.25s;
   padding: 5px 10px;
-  width: 280px;
+  max-width: 280px;
 }
 
-#sidebar .bk-root .card select.bk-input,
-#sidebar .bk-root .card select.bk-input {
-  width: 260px !important;
+#sidebar .bk-root .card .bk.noUi-target {
+  box-sizing: border-box;
+  height: 10px;
+  max-width: 260px !important;
+}
+#sidebar .bk-root .card .bk-input {
+  box-sizing: border-box;
+  height: 45px;
+  max-width: 260px !important;
 }
 
 .bk-root select:not([multiple]).bk-input:hover,
 .bk-root select:not([size]).bk-input:hover {
   box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.1);
+}
+
+.bk-root .choices__list--dropdown .choices__item--selectable::after {
+    content: "";
 }
 
 /* autocomplete */
@@ -310,6 +330,10 @@ table.link-table tr {
   background-color: var(--slate1);
 }
 
+/* remove "at most 1 values selectable" - not translatable easily */
+#sidebar .choices__item.choices__item--choice:not(.choices__item--selectable) {
+  display: none;
+}
 
 /* spinner */
 
@@ -337,6 +361,7 @@ progress::-webkit-progress-value {
   background-color: var(--primary);
 }
 
+
 /* modal close button */
 .pn-modalclose {
   font-size: 2rem;
@@ -358,19 +383,19 @@ span.quality-word {
 }
 
 span.quality-word.Excellent {
-  color: var(--green);
+  color: var(--col-excellent);
 }
 
 span.quality-word.Good {
-  color: var(--blue-light1);
+  color: var(--col-good);
 }
 
 span.quality-word.Average {
-  color: var(--yellow);
+  color: var(--col-average);
 }
 
 span.quality-word.Poor {
-  color: var(--orange);
+  color: var(-col-poor);
 }
 
 span[class^='rank-word-'], span[class*=' rank-word-'] {
@@ -379,16 +404,16 @@ span[class^='rank-word-'], span[class*=' rank-word-'] {
 }
 
 .tg-excellent button {
-    background-color: var(--green) !important;
+    background-color: var(--col-excellent) !important;
 }
 .tg-good button {
-    background-color: var(--blue-light1) !important;
+    background-color: var(--col-good) !important;
 }
 .tg-average button {
-    background-color: var(--yellow) !important;
+    background-color: var(--col-average) !important;
 }
 .tg-poor button {
-    background-color: var(--orange) !important;
+    background-color: var(--col-poor) !important;
 }
 .tgx button {
     border-radius: 30px !important;

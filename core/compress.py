@@ -98,7 +98,8 @@ def simplify_args(best_analog_mode,analog_modes, # 2 bits
                    density_factor, max_density,   # 4 bits (up to 10)
                    tgt_period, periods,       # 4 bits (11 different ones)
                    ssp,ssp_list,              # 1 bit
-                   num_realizations,max_real):# 4 bits (up to 12), total: 30+8+5 = 43 bits => 48/8 = 7 bytes
+                   num_realizations,max_real, # 4 bits (up to 12), total: 30+8+5 = 43 bits => 48/8 = 7 bytes
+                   max_na): # 0-30: 32 : 5 bits
     args,_,_,values = inspect.getargvalues(inspect.currentframe()) # save a copy of the args to simplify. they will be unpacked later.
     
     ArgList = [simplify_item(ssp,ssp_list),
@@ -107,7 +108,8 @@ def simplify_args(best_analog_mode,analog_modes, # 2 bits
                simplify_city(city,cities),
                *simplify_climate(all_indices,climate_indices),
                Argument(val=density_factor,max=max_density),
-               Argument(val=num_realizations,max=max_real)]
+               Argument(val=num_realizations,max=max_real),
+               Argument(val=max_na, max=30)]
     
     return simplify(ArgList), values
 

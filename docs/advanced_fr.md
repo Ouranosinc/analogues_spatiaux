@@ -6,4 +6,6 @@
 
 - __Nombre de simulations__: Par défaut, 12 simulations climatiques sont utilisées pour générer les analogues afin de bien représenter l’incertitude des simulations en climat futur. Vous pouvez choisir d’augmenter ce nombre jusqu’à 24, ou bien le diminuer jusqu’à 6 (non-recommandé).
 
-- __Choix d'analogues__: Cette option permet de modifier l’algorithme qui sélectionne le meilleur analogue pour chaque ville et chaque indice climatique. Par défaut, l’analogue avec la meilleure qualité est choisi. Les autres options proposent de chercher l’analogue le plus près de la ville cible dans le 1e percentile, ou l’analogue ayant la densité de population la plus près de la ville cible.
+- __Choix d'analogues__: Cette option permet de modifier l’algorithme qui sélectionne le meilleur analogue pour chaque ville et chaque indice climatique. Par défaut, l’analogue avec la meilleure qualité est choisi. Les autres options proposent de chercher l’analogue le plus près de la ville cible d'au plus 1 centile du meilleur analogue, ou l’analogue ayant la densité de population la plus près de la ville cible d'au plus 1 centile du meilleur analogue.
+
+- __Trie de l'affichage__: Cette option permet de modifier comment les analogues sont triés sur la page de résultats. Par défaut, le trie est fait pour balancer la qualité de l'analogie et la représentativité de la simulation, pour que le premier résultat soit autant un bon analogue qu'un membre représentatif. Les autres méthodes de trie priorisent soit la qualité de l'analogie, ou la représentativité de chaque simulation.
