@@ -1064,10 +1064,21 @@ update_time("time to serve: ")
 
 # In[ ]:
 
+# Related to integration in CCDP
+css = """
+nav#header {
+    display: None;
+}
+
+.bk-root {
+    height: calc(100vh - 50px) !important;
+}
+"""
+
 js_files = {
     "main": "./scripts/main.js"
 }
-pn.extension(js_files=js_files)
+pn.extension(js_files=js_files, raw_css=[css])
 
 # s = dash.show(port=9093, websocket_origin='*')
 dash.servable()
