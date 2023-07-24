@@ -5,7 +5,7 @@ FROM continuumio/miniconda3
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
-
+RUN conda install python=3.9
 RUN conda install --channel conda-forge cartopy -y
 RUN conda install --channel conda-forge esmpy && conda clean -afy
 

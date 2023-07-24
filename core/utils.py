@@ -127,8 +127,12 @@ def color_convert_alpha(s):
 def check_pip_version(pkgs):
     '''returns a dictionary of packages {pkg_name:version}, as returned by pip list.'''
     # thanks Trevor! this speeds it up immensely.
-    import importlib
-    return {k:importlib.metadata.version(k) for k in pkgs}
+    try:
+        from importlib import metadata
+    except ImportError: # for Python<3.8, or bokeh < 3.0.2
+        import importlib_metadata as metadata
+    __version__ = metadata.version("jsonschema")
+    return {k:metadata.version(k) for k in pkgs}
 
 def get_old_version():
     """ returns true if the current versionfile is correct.
