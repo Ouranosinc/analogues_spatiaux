@@ -25,5 +25,5 @@ WORKDIR /app
 
 EXPOSE 5006
 
-ENTRYPOINT ["panel", "serve", "Dashboard.py", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug", "--static-dirs fonts=./fonts"]
+ENTRYPOINT ["panel", "serve", "Dashboard.py", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug", "--static-dirs", "fonts=./fonts"]
 
