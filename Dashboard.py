@@ -1069,10 +1069,6 @@ css = """
 nav#header {
     display: None;
 }
-
-.bk-root {
-    height: calc(100vh - 50px) !important;
-}
 """
 
 js_files = {
