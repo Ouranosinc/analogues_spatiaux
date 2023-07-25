@@ -4,27 +4,32 @@
 # # Tableau de bord
 
 # In[1]:
+import logging
 
+
+admin_logger = logging.getLogger('panel')
+logger = logging.getLogger('analogs')
+logger.setLevel(logging.INFO)
+logger.addHandler(admin_logger)
 
 import time
 t0 = time.time()
 def update_time(msg=""):
     global t0
     t1 = time.time()
-    print(msg,t1 - t0)
+    logger.debug(msg + str(t1 - t0))
     t0 = t1
 def reset_time():
     global t0
     t0 = time.time()
     
-
-
 # In[3]:
 
 
 import json
 from pathlib import Path
 import panel as pn
+
 
 from core import utils
 global config
@@ -182,7 +187,7 @@ def update_handled(language=LOCALE):
         error_cause=pn.panel("Error Log: "+str(type(e)) + "\n" + str(e))
         
         w_loading.append(pn.FlexBox(error_text,error_cause,try_again,flex_direction='column',align_items='center'))
-        print(str(e))
+        logger.error(str(e))
         
 try_again.on_click(update_handled)
 
@@ -406,6 +411,7 @@ def update_dashboard(language=LOCALE):
         #sim = dsim[climate_indices].isel(location=icity).sel(ssp=ssp)
         #global analogs
         update_time("search, constants: ")
+        logger.info(f"Searching for analogues for {city.city}, ind:{climate_indices}, ssp:{ssp}, end-yr: {tgt_period.stop}")
         analogs, sim, ref = search.analogs(dsim, 
                                                   dref, 
                                                   density, 
@@ -1049,12 +1055,11 @@ w_enter_fr.on_click(close_modal_set_french)
 
 # In[ ]:
 
-if hasattr(pn.state,'schedule_task'):
+if hasattr(pn.state,'schedule_task') and 'check_versions' not in pn.state._scheduled:
     pn.state.schedule_task('check_versions',utils.check_version_delete_cache,period='1w')
 else:
     # run once:
-    import warnings
-    warnings.warn('Cannot schedule task: check_versions. Running once. Have you double checked the panel version?')
+    logger.warning('Cannot schedule task: check_versions. Running once.')
     pn.state.onload(utils.check_version_delete_cache)
 pn.state.onload(update_handled)
 update_time("time to serve: ")
