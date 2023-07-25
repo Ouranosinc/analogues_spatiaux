@@ -33,7 +33,8 @@ analog_modes_desc = {"en":[f"Closest to location of target city within {per_best
                            f"Meilleur analogue"]}
 
 from pathlib import Path
-WRITE_DIR = Path('/notebook_dir/writable-workspace/analogues_spatiaux/')
+from os import getenv
+WRITE_DIR = Path(getenv('ANALOGUES_WRITE_DIR', '/notebook_dir/writable-workspace/analogues_spatiaux/'))
 
 benchmark_path = WRITE_DIR / Path('benchmark.obj')
 density_path = WRITE_DIR /  Path('density.obj')
