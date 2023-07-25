@@ -38,14 +38,48 @@ app_title = {"en":"Climate Analogues","fr":"Analogues climatiques"}
 
 LOCALE = "en"
 qd = {}
+show_header = True
+show_modal = True
+
 if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location and hasattr(pn.state.location,'query_params'):
     qd = pn.state.location.query_params
+
 if ('lang' in qd) and (qd['lang'] in ['en','fr']):
     LOCALE = qd['lang']
+    show_header = False
+    show_modal = False
     
 ## Set CSS:
+# Related to integration in CCDP
+
+css = "" if show_header else """
+nav#header {
+    display: None;
+}
+
+div#sidebar {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+div#main {
+    box-sizing: border-box;
+    height: 100vh;
+}
+"""
+
+css += """
+
+div#main .pn-loading::before {
+    background-position: top center;
+}"""
+js_files = {
+    "main": "./scripts/main.js"
+}
+
 pn.extension(
-    raw_css=[config["css"].replace('\\n','').replace('\n','')],
+    raw_css=[config["css"].replace('\\n','').replace('\n',''), css],
+    js_files=js_files,
     loading_spinner='arcs',
     loading_color='#3869f6'
 )
@@ -72,6 +106,7 @@ w_loading_text = pn.panel({'en':'Loading app...','fr':'Téléchargement...'}[LOC
 w_loading = pn.Column(w_loading_spinner, w_loading_text)
 
 sidebar.append(pn.Row(pn.layout.HSpacer(),w_loading,pn.layout.HSpacer()))
+
 main.append(pn.Column(pn.layout.VSpacer(),w_loading,pn.layout.VSpacer()))
 
 docpath = Path('./docs')
@@ -98,7 +133,8 @@ def open_modal(event):
 w_about_name = {"en":"About","fr":"À Propos"}
 w_open_modal = pn.widgets.Button(name=w_about_name[LOCALE], width = 150)
 w_open_modal.on_click(open_modal)
-pn.state.onload(dash.open_modal)
+if show_modal:
+    pn.state.onload(dash.open_modal)
 
 
     
@@ -133,7 +169,8 @@ def get_helppage(locale):
                                                 label={"en":"Download full report","fr":"Télécharger rapport (en)"}[locale],
                                                 width=300)
                                                 
-    helppage.append(w_report_download)
+    helppage.append(pn.Row(pn.layout.HSpacer(),w_report_download,pn.layout.HSpacer()))
+    helppage.append(pn.layout.VSpacer(height=50))
     return helppage
 
 
@@ -497,8 +534,8 @@ def update_dashboard(language=LOCALE):
         # Cards
         
         cards = pn.Accordion(max_width=920,sizing_mode='stretch_width',width_policy='max', header_background='white',
-                                  background='whitesmoke',
-                                  active_header_background='white',)
+                                  background='white',
+                                  active_header_background='white',css_classes=['accordion-univariate'],)
         climdict = {}
         for climind in climate_indices:
             long_name = {"en":sim[climind].long_name,"fr":sim[climind].long_name_fr}[language]
@@ -945,6 +982,7 @@ def update_dashboard(language=LOCALE):
                        max_width=910,sizing_mode='stretch_width'
                        ),
             get_card_data,
+            pn.layout.VSpacer(height=50,max_height=50),
             name=f'{city.city}, {inv_ssp[ssp]}, {tgt_period.start}-{tgt_period.stop}',
             align_content='center',
             justify_content='flex-start', 
@@ -1068,22 +1106,6 @@ update_time("time to serve: ")
 # To use this dashboard from within PAVICS and have it run in your user account use the first line of the next cell (`s = dash.show(...)`) and comment the second one (`dash.servable()`). In that case, if you want to update the dashboard after making changes, don't forget to run `s.stop()` before rerunning  `s = dash.show(...)`.
 
 # In[ ]:
-
-# Related to integration in CCDP
-css = """
-nav#header {
-    display: None;
-}
-
-.bk-root {
-    height: calc(100vh - 50px) !important;
-}
-"""
-
-js_files = {
-    "main": "./scripts/main.js"
-}
-pn.extension(js_files=js_files, raw_css=[css])
 
 # s = dash.show(port=9093, websocket_origin='*')
 dash.servable()
