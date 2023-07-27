@@ -85,9 +85,9 @@ pn.extension(
 )
 
 ## First load: just the dashboard, help buttons, and language.
-dash = pn.template.VanillaTemplate(title='')
+dash = pn.template.VanillaTemplate(title='', sidebar_width=350)
 
-sidebar = pn.FlexBox(align_content='flex-start',justify_content='flex-start', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both',css_classes=['flex-sidebar'])
+sidebar = pn.FlexBox(align_content='flex-start',justify_content='flex-start', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both', css_classes=['flex-sidebar'])
 main    = pn.FlexBox(align_content='flex-start',justify_content='center', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_width')
 modal   = pn.FlexBox(align_content='space-evenly',justify_content='space-evenly', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both')
 header  = pn.FlexBox(align_content='space-evenly',justify_content='space-evenly', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both')
