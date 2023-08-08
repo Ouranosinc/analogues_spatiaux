@@ -74,7 +74,8 @@ css += """
 }
 .bk-root .choices__list--multiple .choices__item,
 .bk-root .choices__list--dropdown {
-		word-break: break-word;
+		word-break: unset;
+	  overflow-wrap: break-word;
 }
 div#main .pn-loading::before {
     background-position: top center;
