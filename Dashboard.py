@@ -69,7 +69,13 @@ div#main {
 """
 
 css += """
-
+.bk-root .choices__list--dropdown .choices__item--selectable {
+		padding-right: 10px;
+}
+.bk-root .choices__list--multiple .choices__item,
+.bk-root .choices__list--dropdown {
+		word-break: break-word;
+}
 div#main .pn-loading::before {
     background-position: top center;
 }"""
