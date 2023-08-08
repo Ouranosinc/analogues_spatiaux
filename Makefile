@@ -17,9 +17,17 @@ push-release:
 	docker push registry.gitlab.com/crim.ca/clients/ccdp/analogues-spatiaux:dev
 
 deploy-staging:
-	IAC_CONFIG=../analogues-spatiaux-iac/staging.yaml make -C ../iac-openstack iac-update-stack
+	IAC_CONFIG=../analogues-spatiaux-iac/base.yaml,../analogues-spatiaux-iac/staging.yaml make -C ../iac-openstack iac-update-stack
 
-build-deploy:
+deploy-prod:
+	IAC_CONFIG=../analogues-spatiaux-iac/base.yaml,../analogues-spatiaux-iac/prod.yaml make -C ../iac-openstack iac-update-stack
+
+build-deploy-staging:
 	$(MAKE) build-release
 	$(MAKE) push-release
 	$(MAKE) deploy-staging
+
+build-deploy-prod:
+	$(MAKE) build-release
+	$(MAKE) push-release
+	$(MAKE) deploy-prod

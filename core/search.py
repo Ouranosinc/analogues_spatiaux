@@ -53,33 +53,35 @@ def get_unusable_indices(iloc, ssp, tgt_period, max_na = max_na, dsim=None,dref=
     If dsim and dref are not given, loads them into global variables.
     """
     import dask
-    from dask.diagnostics import ProgressBar
+    import time
+    t0 = time.time()
     
-    with ProgressBar():
-        if dsim is None:
-            dsim = load_dsim()
-        if dref is None:
-            dref = load_dref()
-        if cities is None:
-            cities = load_cities()
-        city = cities.iloc[iloc]
-        ref = dref.sel(lat=city.geometry.y, lon=city.geometry.x)
-        sim = dsim.isel(location=city.location, realization=slice(0, num_realizations)).sel(ssp=ssp)
-        simh = sim.sel(time=slice('1991', '2020'))
-        simf = sim.sel(time=tgt_period)
+    if dsim is None:
+        dsim = load_dsim()
+    if dref is None:
+        dref = load_dref()
+    if cities is None:
+        cities = load_cities()
+    city = cities.iloc[iloc]
+    ref = dref.sel(lat=city.geometry.y, lon=city.geometry.x)
+    sim = dsim.isel(location=city.location, realization=slice(0, num_realizations)).sel(ssp=ssp)
+    simh = sim.sel(time=slice('1991', '2020'))
+    simf = sim.sel(time=tgt_period)
 
-        def check(ds):
-            ds_check = (ds.std('time') == 0) | is_valid(ds,max_na)
-            if 'realization' in ds.dims:
-                return ds_check.any('realization')
-            return ds_check
-    
-        simh, simf, ref = dask.compute(simh, simf, ref)
-        ds_ls = [simh,simf,ref]
-        var = set()
-        for ds in ds_ls:
-            var.union([name for name in ds.data_vars if check(ds[[name]])])
-        return var
+    def check(ds):
+        ds_check = (ds.std('time') == 0) | is_valid(ds,max_na)
+        if 'realization' in ds.dims:
+            return ds_check.any('realization')
+        return ds_check
+
+    simh, simf, ref = dask.compute(simh, simf, ref)
+    ds_ls = [simh,simf,ref]
+    var = set()
+    for ds in ds_ls:
+        var.union([name for name in ds.data_vars if check(ds[[name]])])
+    t1 = time.time()
+    logger.info(f'get_unusable_indices: cache miss, for {iloc}, {ssp}, {tgt_period.stop}. Time: {t1-t0:.2f}s')
+    return var
 
 
 def analogs( dsim,
@@ -224,6 +226,7 @@ def _analogs_search( sim,
     """ This function computes the analogs search. 
         It isn't meant to be called directly, as you should use the wrapper, analogs, to compute extra variables efficiently
     """
+    logger.info("_analogs_search: cache miss.")
     import numpy as np
     from clisops.core.subset import distance
     from xclim import analog as xa

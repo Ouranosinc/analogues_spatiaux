@@ -4,27 +4,32 @@
 # # Tableau de bord
 
 # In[1]:
+import logging
 
+
+admin_logger = logging.getLogger('panel')
+logger = logging.getLogger('analogs')
+logger.setLevel(logging.INFO)
+logger.addHandler(admin_logger)
 
 import time
 t0 = time.time()
 def update_time(msg=""):
     global t0
     t1 = time.time()
-    print(msg,t1 - t0)
+    logger.debug(msg + str(t1 - t0))
     t0 = t1
 def reset_time():
     global t0
     t0 = time.time()
     
-
-
 # In[3]:
 
 
 import json
 from pathlib import Path
 import panel as pn
+
 
 from core import utils
 global config
@@ -33,22 +38,56 @@ app_title = {"en":"Climate Analogues","fr":"Analogues climatiques"}
 
 LOCALE = "en"
 qd = {}
+show_header = True
+show_modal = True
+
 if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location and hasattr(pn.state.location,'query_params'):
     qd = pn.state.location.query_params
+
 if ('lang' in qd) and (qd['lang'] in ['en','fr']):
     LOCALE = qd['lang']
+    show_header = False
+    show_modal = False
     
 ## Set CSS:
+# Related to integration in CCDP
+
+css = "" if show_header else """
+nav#header {
+    display: None;
+}
+
+div#sidebar {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+div#main {
+    box-sizing: border-box;
+    height: 100vh;
+}
+"""
+
+css += """
+
+div#main .pn-loading::before {
+    background-position: top center;
+}"""
+js_files = {
+    "main": "./scripts/main.js"
+}
+
 pn.extension(
-    raw_css=[config["css"].replace('\\n','').replace('\n','')],
+    raw_css=[config["css"].replace('\\n','').replace('\n',''), css],
+    js_files=js_files,
     loading_spinner='arcs',
     loading_color='#3869f6'
 )
 
 ## First load: just the dashboard, help buttons, and language.
-dash = pn.template.VanillaTemplate(title='')
+dash = pn.template.VanillaTemplate(title='', sidebar_width=350)
 
-sidebar = pn.FlexBox(align_content='flex-start',justify_content='flex-start', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both',css_classes=['flex-sidebar'])
+sidebar = pn.FlexBox(align_content='flex-start',justify_content='flex-start', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both', css_classes=['flex-sidebar'])
 main    = pn.FlexBox(align_content='flex-start',justify_content='center', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_width')
 modal   = pn.FlexBox(align_content='space-evenly',justify_content='space-evenly', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both')
 header  = pn.FlexBox(align_content='space-evenly',justify_content='space-evenly', flex_wrap='nowrap', flex_direction='column', sizing_mode='stretch_both')
@@ -67,6 +106,7 @@ w_loading_text = pn.panel({'en':'Loading app...','fr':'Téléchargement...'}[LOC
 w_loading = pn.Column(w_loading_spinner, w_loading_text)
 
 sidebar.append(pn.Row(pn.layout.HSpacer(),w_loading,pn.layout.HSpacer()))
+
 main.append(pn.Column(pn.layout.VSpacer(),w_loading,pn.layout.VSpacer()))
 
 docpath = Path('./docs')
@@ -81,9 +121,9 @@ w_enter_fr = pn.widgets.Button(name='Entrer')
 w_enter_en.disabled = True
 w_enter_fr.disabled = True
 
-w_about_en = pn.Column(pn.pane.Markdown('## About: Spatial Analogues'), pn.pane.Markdown(docs['info_en'],height=470),w_enter_en)
-w_about_fr = pn.Column(pn.pane.Markdown('## À Propos: Analogues Spatiaux'),pn.pane.Markdown(docs['info_fr'],height=470),w_enter_fr)
-modal_lang = pn.Row(pn.layout.HSpacer(),w_about_en,pn.layout.HSpacer(),w_about_fr,pn.layout.HSpacer(),min_width=600)
+w_about_en = pn.Column(pn.pane.Markdown(docs['info_en'],width=350), w_enter_en,pn.layout.VSpacer(height=42))
+w_about_fr = pn.Column(pn.pane.Markdown(docs['info_fr'],width=400), w_enter_fr,pn.layout.VSpacer(height=42))
+modal_lang = pn.Row(pn.layout.HSpacer(),w_about_en,pn.layout.HSpacer(),w_about_fr,pn.layout.HSpacer(),min_width=700)
 modal.append(modal_lang)
 
 def open_modal(event):
@@ -93,7 +133,8 @@ def open_modal(event):
 w_about_name = {"en":"About","fr":"À Propos"}
 w_open_modal = pn.widgets.Button(name=w_about_name[LOCALE], width = 150)
 w_open_modal.on_click(open_modal)
-pn.state.onload(dash.open_modal)
+if show_modal:
+    pn.state.onload(dash.open_modal)
 
 
     
@@ -107,7 +148,6 @@ update_time('time to first load: ')
 
 # In[4]:
 
-
 def get_helppage(locale):
     docpages = {'howto':{"en":"How to use this app","fr":"Comment utiliser cette application"},
                 'interp':{"en":"Interpreting Results","fr":"Interprétation des résultats"},
@@ -120,15 +160,19 @@ def get_helppage(locale):
     linkhtml_fr = ''.join(["<h1>Aide</h1><h2>Contenu:</h2><table class='link-table'>",*[f'<tr><td><a href="#{page}">{i+1}. {title}</td></tr>'  for i,(page,title) in enumerate(docpage_locale.items())],"</table>"])
 
     links = pn.pane.HTML({"en":linkhtml_en,"fr":linkhtml_fr}[locale],sizing_mode='stretch_width',max_width=920,width_policy='max')
+    w_about = pn.pane.Markdown(docs[f'info_{locale}'],max_width = 920,width_policy='max')
     
     helppage = pn.Column(name={"en":"Help","fr":"Aide"}[locale],max_width=920, width_policy='max')
+    if not show_modal:
+	    helppage.append(w_about)
     helppage.append(links)
     [helppage.append(markdown) for markdown in markdowns]
     w_report_download = pn.widgets.FileDownload(file="analogs_report_202205.pdf",
                                                 label={"en":"Download full report","fr":"Télécharger rapport (en)"}[locale],
                                                 width=300)
                                                 
-    helppage.append(w_report_download)
+    helppage.append(pn.Row(pn.layout.HSpacer(),w_report_download,pn.layout.HSpacer()))
+    helppage.append(pn.layout.VSpacer(height=50))
     return helppage
 
 
@@ -182,7 +226,7 @@ def update_handled(language=LOCALE):
         error_cause=pn.panel("Error Log: "+str(type(e)) + "\n" + str(e))
         
         w_loading.append(pn.FlexBox(error_text,error_cause,try_again,flex_direction='column',align_items='center'))
-        print(str(e))
+        logger.error(str(e))
         
 try_again.on_click(update_handled)
 
@@ -406,6 +450,7 @@ def update_dashboard(language=LOCALE):
         #sim = dsim[climate_indices].isel(location=icity).sel(ssp=ssp)
         #global analogs
         update_time("search, constants: ")
+        logger.info(f"Searching for analogues for {city.city}, ind:{climate_indices}, ssp:{ssp}, end-yr: {tgt_period.stop}")
         analogs, sim, ref = search.analogs(dsim, 
                                                   dref, 
                                                   density, 
@@ -491,8 +536,8 @@ def update_dashboard(language=LOCALE):
         # Cards
         
         cards = pn.Accordion(max_width=920,sizing_mode='stretch_width',width_policy='max', header_background='white',
-                                  background='whitesmoke',
-                                  active_header_background='white',)
+                                  background='white',
+                                  active_header_background='white',css_classes=['accordion-univariate'],)
         climdict = {}
         for climind in climate_indices:
             long_name = {"en":sim[climind].long_name,"fr":sim[climind].long_name_fr}[language]
@@ -939,6 +984,7 @@ def update_dashboard(language=LOCALE):
                        max_width=910,sizing_mode='stretch_width'
                        ),
             get_card_data,
+            pn.layout.VSpacer(height=50,max_height=50),
             name=f'{city.city}, {inv_ssp[ssp]}, {tgt_period.start}-{tgt_period.stop}',
             align_content='center',
             justify_content='flex-start', 
@@ -1049,12 +1095,11 @@ w_enter_fr.on_click(close_modal_set_french)
 
 # In[ ]:
 
-if hasattr(pn.state,'schedule_task'):
+if hasattr(pn.state,'schedule_task') and 'check_versions' not in pn.state._scheduled:
     pn.state.schedule_task('check_versions',utils.check_version_delete_cache,period='1w')
 else:
     # run once:
-    import warnings
-    warnings.warn('Cannot schedule task: check_versions. Running once. Have you double checked the panel version?')
+    logger.warning('Cannot schedule task: check_versions. Running once.')
     pn.state.onload(utils.check_version_delete_cache)
 pn.state.onload(update_handled)
 update_time("time to serve: ")

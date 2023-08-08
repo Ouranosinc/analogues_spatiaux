@@ -4,7 +4,8 @@ from .constants import quality_thresholds, num_realizations, version_path, datav
 
 from pathlib import Path
 import json
-
+import logging
+logger = logging.getLogger('analogs')
 def load_config():
     global config
     if 'config' not in globals():
@@ -157,11 +158,15 @@ def update_versions(ver_new):
         json.dump(ver_new,version_file, ensure_ascii=False, indent=4)
 
 def check_version_delete_cache():
-    print('checking package versions...')
+    logger.info('checking package versions...')
     curr = check_pip_version(['xarray','xclim','pandas','geopandas','joblib'])
     old = get_old_version()
+    if not old:
+        logger.warning("No cached files found.")
+    if not curr:
+        logger.critical("Modules not available.")
     if not compare_versions(curr,old):
-        print("Old versions detected. Removing cached files.")
+        logger.warning("Removing cached files due to: version mismatch")
         try:
             os.remove(benchmark_path)
         except:

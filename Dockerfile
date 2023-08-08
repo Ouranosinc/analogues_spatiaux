@@ -5,7 +5,7 @@ FROM continuumio/miniconda3
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
-RUN conda install python=3.9
+RUN conda install python=3.9 -y
 RUN conda install --channel conda-forge cartopy -y
 RUN conda install --channel conda-forge esmpy && conda clean -afy
 
@@ -25,5 +25,5 @@ WORKDIR /app
 
 EXPOSE 5006
 
-ENTRYPOINT ["panel", "serve", "Dashboard.py", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug", "--static-dirs", "fonts=./fonts"]
+ENTRYPOINT ["panel", "serve", "Dashboard.py", "--session-token-expiration", "86400", "--prefix", "analogs", "--use-xheaders", "--log-level=debug", "--static-dirs", "fonts=./fonts", "scripts=./scripts"]
 
