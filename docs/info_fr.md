@@ -1,3 +1,4 @@
+# À propos: Analogues spatiaux
 Les __analogues spatiaux__ sont des cartes qui montrent des lieux ayant un 
 climat actuel qui est similaire au climat futur d'un endroit ciblé. Ces types 
 de cartes peuvent être utiles à l'adaptation aux changements climatiques,

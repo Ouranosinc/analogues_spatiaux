@@ -121,9 +121,9 @@ w_enter_fr = pn.widgets.Button(name='Entrer')
 w_enter_en.disabled = True
 w_enter_fr.disabled = True
 
-w_about_en = pn.Column(pn.pane.Markdown('## About: Spatial Analogues'), pn.pane.Markdown(docs['info_en'],height=470),w_enter_en)
-w_about_fr = pn.Column(pn.pane.Markdown('## À Propos: Analogues Spatiaux'),pn.pane.Markdown(docs['info_fr'],height=470),w_enter_fr)
-modal_lang = pn.Row(pn.layout.HSpacer(),w_about_en,pn.layout.HSpacer(),w_about_fr,pn.layout.HSpacer(),min_width=600)
+w_about_en = pn.Column(pn.pane.Markdown(docs['info_en'],width=350), w_enter_en,pn.layout.VSpacer(height=42))
+w_about_fr = pn.Column(pn.pane.Markdown(docs['info_fr'],width=400), w_enter_fr,pn.layout.VSpacer(height=42))
+modal_lang = pn.Row(pn.layout.HSpacer(),w_about_en,pn.layout.HSpacer(),w_about_fr,pn.layout.HSpacer(),min_width=700)
 modal.append(modal_lang)
 
 def open_modal(event):
@@ -148,7 +148,6 @@ update_time('time to first load: ')
 
 # In[4]:
 
-
 def get_helppage(locale):
     docpages = {'howto':{"en":"How to use this app","fr":"Comment utiliser cette application"},
                 'interp':{"en":"Interpreting Results","fr":"Interprétation des résultats"},
@@ -161,8 +160,11 @@ def get_helppage(locale):
     linkhtml_fr = ''.join(["<h1>Aide</h1><h2>Contenu:</h2><table class='link-table'>",*[f'<tr><td><a href="#{page}">{i+1}. {title}</td></tr>'  for i,(page,title) in enumerate(docpage_locale.items())],"</table>"])
 
     links = pn.pane.HTML({"en":linkhtml_en,"fr":linkhtml_fr}[locale],sizing_mode='stretch_width',max_width=920,width_policy='max')
+    w_about = pn.pane.Markdown(docs[f'info_{locale}'],max_width = 920,width_policy='max')
     
     helppage = pn.Column(name={"en":"Help","fr":"Aide"}[locale],max_width=920, width_policy='max')
+    if not show_modal:
+	    helppage.append(w_about)
     helppage.append(links)
     [helppage.append(markdown) for markdown in markdowns]
     w_report_download = pn.widgets.FileDownload(file="analogs_report_202205.pdf",
