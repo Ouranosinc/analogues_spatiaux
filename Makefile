@@ -8,7 +8,10 @@ build-local:
 	docker build -t analogues-spatiaux:dev .
 
 run-local:
-	docker run -p 5006:5006 -e BOKEH_ALLOW_WS_ORIGIN=127.0.0.1:5006,localhost:5006 analogues-spatiaux:dev
+	docker run -p 5006:5006 -d -e BOKEH_ALLOW_WS_ORIGIN=127.0.0.1:5006,localhost:5006 analogues-spatiaux:dev
+
+rm-local:
+	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor=analogues-spatiaux:dev --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME
 
 build-release:
 	docker build -t registry.gitlab.com/crim.ca/clients/ccdp/analogues-spatiaux:dev .

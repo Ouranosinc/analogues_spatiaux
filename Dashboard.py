@@ -1029,10 +1029,12 @@ def update_dashboard(language=LOCALE):
     @pn.depends(clicks=w_run.param.clicks, watch=True)
     def t_run(clicks):
         searches.loading = True
-        
+        prev = w_run.disabled
+        w_run.disabled = True
         pane = analogs_search(clicks)
         
         searches.append(pane)
+        w_run.disabled = prev
         searches.loading = False
         searches.active = len(searches.objects) - 1
     update_time("time to load sidebar: ")
