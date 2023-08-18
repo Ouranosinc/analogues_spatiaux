@@ -33,7 +33,7 @@ import panel as pn
 
 from core import utils
 global config
-config = utils.load_config()
+config = pn.state.as_cached('config',utils.load_config)
 app_title = {"en":"Climate Analogues","fr":"Analogues climatiques"}
 
 LOCALE = "en"
@@ -209,7 +209,7 @@ from core.constants import (fut_col,
 import os
 
 if not WRITE_DIR.exists():
-    os.makedirs(WRITE_DIR)
+    os.makedirs(WRITE_DIR,exist_ok=True)
     
 main.clear()
 searches = widgets.TabsMod(get_helppage(LOCALE),closable=True, dynamic=True)
@@ -283,7 +283,7 @@ def update_dashboard(language=LOCALE):
         bokeh_plot = plot.state
         bokeh_plot.toolbar.autohide = True
                         
-    cities = utils.load_cities()
+    cities = pn.state.as_cached('cities',utils.load_cities)
     w_city = pn.widgets.MultiChoice(
         name={"en":'Target city',"fr":"Ville ciblée"}[language],
         options={f"{city.prov_code}: {city.city}": i for i, city in cities.iterrows()},# autosorts due to bug in bokeh, need to have prov_code first.
@@ -312,7 +312,7 @@ def update_dashboard(language=LOCALE):
         options={{"en":f"{x-29}-{x}","fr":f"{x-29} à {x}"}[language]: slice(f"{x-29}", f"{x}") for x in range(2020, 2101, 10)},
         value=slice("2041", "2070"), width=300,min_width=300,max_width=300
     )
-    datavars = utils.load_datavars()
+    datavars = pn.state.as_cached('datavars',utils.load_datavars)
     w_indices = pn.widgets.MultiChoice(
         name={"en":'Climate indices (select up to 4)',"fr":"Indices climatiques (sélectionner jusqu'à 4)"}[language],
         max_items=4,
@@ -347,7 +347,7 @@ def update_dashboard(language=LOCALE):
             dens = cities.iloc[icity[0]].density
             #dmin = max(dens / density_factor, min_density)
             #dmax = dens * density_factor
-            density = utils.load_density()
+            density = pn.state.as_cached('density',utils.load_density)
             
             mask = utils.getmask(density,density_factor,dens,minpts,maxpts,min_density)
             N = mask.sum().item()
@@ -417,11 +417,11 @@ def update_dashboard(language=LOCALE):
         
         update_time("search, imports: ")
         # data:
-        dref = utils.load_dref()
-        dsim = utils.load_dsim()
-        benchmark = utils.load_benchmark()
-        density = utils.load_density()
-        places = utils.load_places()
+        dref = pn.state.as_cached('dref',utils.load_dref)
+        dsim = pn.state.as_cached('dsim',utils.load_dsim)
+        benchmark = pn.state.as_cached('benchmark',utils.load_benchmark)
+        density = pn.state.as_cached('density',utils.load_density)
+        places = pn.state.as_cached('places',utils.load_places)
         update_time("search, data load: ")
         gv.extension('bokeh')
         CartoLabels = gv.element.WMTS('https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png', name='CartoLabels')
@@ -813,7 +813,7 @@ def update_dashboard(language=LOCALE):
                 climindstr = '-'.join(climate_indices)
                 output_dir = WRITE_DIR / 'export'
                 if not output_dir.exists():
-                    os.makedirs(output_dir)
+                    os.makedirs(output_dir, exist_ok=True)
 
                 filebuffer = BytesIO(b'')
 
@@ -1104,12 +1104,7 @@ w_enter_fr.on_click(close_modal_set_french)
 
 # In[ ]:
 
-if hasattr(pn.state,'schedule_task') and 'check_versions' not in pn.state._scheduled:
-    pn.state.schedule_task('check_versions',utils.check_version_delete_cache,period='1w')
-else:
-    # run once:
-    logger.warning('Cannot schedule task: check_versions. Running once.')
-    pn.state.onload(utils.check_version_delete_cache)
+
 pn.state.onload(update_handled)
 update_time("time to serve: ")
 

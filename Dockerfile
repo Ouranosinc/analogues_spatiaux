@@ -23,6 +23,8 @@ COPY . app
 
 WORKDIR /app
 
+RUN pip install ./
+
 EXPOSE 5006
 
 CMD exec ./start_panel.sh
