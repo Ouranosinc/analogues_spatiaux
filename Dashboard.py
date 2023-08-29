@@ -46,7 +46,6 @@ if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location an
 
 if ('lang' in qd) and (qd['lang'] in ['en','fr']):
   LOCALE = qd['lang']
-  print("LOCALE registered.",LOCALE)
   show_header = False
   show_modal = False
     
