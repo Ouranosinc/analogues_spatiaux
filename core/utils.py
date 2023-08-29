@@ -29,7 +29,7 @@ def load_dref():
     if 'dref' not in globals():
         dref = open_thredds(
             config["url"]["dref"]
-        ).chunk({'time': -1}).sel(time=slice('1991', '2020'))
+        ).chunk({'time': -1,'lat':21,'lon':-1}).sel(time=slice('1991', '2020'))
     return dref
 
 def load_datavars():
