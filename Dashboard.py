@@ -45,9 +45,10 @@ if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location an
     qd = pn.state.location.query_params
 
 if ('lang' in qd) and (qd['lang'] in ['en','fr']):
-    LOCALE = qd['lang']
-    show_header = False
-    show_modal = False
+  LOCALE = qd['lang']
+  print("LOCALE registered.",LOCALE)
+  show_header = False
+  show_modal = False
     
 ## Set CSS:
 # Related to integration in CCDP
@@ -140,8 +141,7 @@ def open_modal(event):
 w_about_name = {"en":"About","fr":"À Propos"}
 w_open_modal = pn.widgets.Button(name=w_about_name[LOCALE], width = 150)
 w_open_modal.on_click(open_modal)
-if show_modal:
-    pn.state.onload(dash.open_modal)
+
 
 
     
@@ -170,8 +170,7 @@ def get_helppage(locale):
     w_about = pn.pane.Markdown(docs[f'info_{locale}'],max_width = 920,width_policy='max')
     
     helppage = pn.Column(name={"en":"Help","fr":"Aide"}[locale],max_width=920, width_policy='max')
-    if not show_modal:
-	    helppage.append(w_about)
+    helppage.append(w_about)
     helppage.append(links)
     [helppage.append(markdown) for markdown in markdowns]
     w_report_download = pn.widgets.FileDownload(file="analogs_report_202205.pdf",
