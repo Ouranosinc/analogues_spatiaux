@@ -7,7 +7,7 @@ recherche» située à gauche.
 3. Choisissez l'un des deux scénarios d'émissions futures : 
 un scénario à émissions élevées (SSP5-8.5) ou un scénario à émissions modérées (SSP2-4.5).
 
-4. Choisissez une période future de 30 ans.
+4. Choisissez une période future de 30 ans avec l'aide de la glissière de période ciblée.
 
 5. Sélectionnez de un à quatre indices climatiques. 
 L'évolution future de ces indices sera comparée aux valeurs actuelles d'autres villes. Notez que certains indices ne sont pas disponibles pour les villes du Nord.
