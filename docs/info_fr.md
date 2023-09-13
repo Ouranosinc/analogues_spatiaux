@@ -1,6 +1,6 @@
 # À propos: Analogues spatiaux
 Les __analogues spatiaux__ sont des lieux (dans ce cas, des villes) où un ou plusieurs descripteurs du climat sont similaires à ceux projeté pour un autre lieu dans le futur.
-En d'autres termes, il s'agit de lieux qui connaissent actuellement une ou plusieurs des conditions climatiques que nous nous attendons à ce que la ville cible connaisse à l'avenir.
+Autrement dit, il s'agit de lieux qui connaissent actuellement une ou plusieurs des conditions climatiques que nous nous attendons à ce que la ville cible connaisse à l'avenir.
 Les conditions climatiques sont définies par un ou plusieurs indices climatiques.
 Les analogues spatiaux peuvent nous aider à conceptualiser le climat futur d'une ville ou d'une région en nous orientant vers des lieux qui connaissent déjà des conditions similaires.
 En examinant les mesures utilisées sur les sites des analogues spatiaux pour faire face aux conditions actuelles,
