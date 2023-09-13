@@ -1,5 +1,5 @@
 # About: Spatial Analogues
-__Spatial analogues__ are locations (in this case, cities) where one or more descriptor of climate is the same as that projected for another location in the future.
+__Spatial analogues__ are locations (in this case, cities) where one or more descriptor of climate is similar to that projected for another location in the future.
 In other words, they are locations that are currently experiencing one or more of the climatic conditions that we would expect our target location to experience in the future.
 Climatic conditions are defined by one or more climate indices. Spatial analogues can help us conceptualize what the future climate might look like in a city
 or region by directing us to places that are already experiencing similar conditions. 
