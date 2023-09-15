@@ -1,17 +1,14 @@
 # À propos: Analogues spatiaux
-Les __analogues spatiaux__ sont des cartes qui montrent des lieux ayant un 
-climat actuel qui est similaire au climat futur d'un endroit ciblé. Ces types 
-de cartes peuvent être utiles à l'adaptation aux changements climatiques,
-car elles permettent de voir comment certaines régions se débrouillent 
-aujourd'hui sous des conditions climatiques qui se produiront ailleurs dans 
-le futur.
+Les __analogues spatiaux__ sont des lieux (dans ce cas, des villes) où un ou plusieurs descripteurs du climat sont similaires à ceux projeté pour un autre lieu dans le futur.
+Autrement dit, il s'agit de lieux qui connaissent actuellement une ou plusieurs des conditions climatiques que nous nous attendons à ce que la ville cible connaisse à l'avenir.
+Les conditions climatiques sont définies par un ou plusieurs indices climatiques.
+Les analogues spatiaux peuvent nous aider à conceptualiser le climat futur d'une ville ou d'une région en nous orientant vers des lieux qui connaissent déjà des conditions similaires.
+En examinant les mesures utilisées sur les sites des analogues spatiaux pour faire face aux conditions actuelles,
+les villes cibles peuvent obtenir des informations sur la manière de se préparer et de s'adapter au changement climatique. 
 <br>
 <br>
-Par exemple, la ville de Québec pourrait ressentir une hausse des vagues de 
-chaleur dans le futur. Ainsi, son administration municipale pourrait s'inspirer 
-de l'expérience et de l'expertise de la ville de Détroit aux États-Unis, où les 
-vagues de chaleurs sont déjà plus courantes, afin de préparer des plans 
-d'intervention mieux adaptés au climat futur.
-<br>
-<br>
-En utilisant les analogues spatiaux, les villes et les régions peuvent mieux comprendre les impacts futurs du changement climatique et prendre des mesures pour s'y préparer.
+Par exemple, la moyenne annuelle des jours les plus chauds devrait augmenter dans la ville de Toronto,
+ce qui a des répercussions sur les infrastructures de transport (voir : [Chaussées et températures extrêmes dans la ville de Toronto](https://donneesclimatiques.ca/etude-de-cas/chaussee-et-temperatures-extremes-dans-la-ville-de-toronto/)).
+Actuellement, la ville de Cleveland, en Ohio, connaît une moyenne annuelle des jours les plus chauds qui est similaire à celle prévue pour Toronto
+d'ici le milieu du siècle dans le cadre d'un scénario à émissions élevées. 
+Ainsi, son administration municipale pourrait s'inspirer de la ville de Cleveland pour voir comment cette municipalité s'assure que son infrastructure résiste aux régimes de température actuels. 
