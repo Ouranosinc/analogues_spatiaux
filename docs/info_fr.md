@@ -8,7 +8,7 @@ les villes cibles peuvent obtenir des informations sur la manière de se prépar
 <br>
 <br>
 Par exemple, la moyenne annuelle des jours les plus chauds devrait augmenter dans la ville de Toronto,
-ce qui a des répercussions sur les infrastructures de transport (voir : [Chaussées et températures extrêmes dans la ville de Toronto](https://donneesclimatiques.ca/etude-de-cas/chaussee-et-temperatures-extremes-dans-la-ville-de-toronto/)).
+ce qui a des répercussions sur les infrastructures de transport (voir : [Chaussées et températures extrêmes dans la ville de Toronto](https://donneesclimatiques.ca/etude-de-cas/chaussee-et-temperatures-extremes-dans-la-ville-de-toronto/){: target="_parent"}).
 Actuellement, la ville de Cleveland, en Ohio, connaît une moyenne annuelle des jours les plus chauds qui est similaire à celle prévue pour Toronto
 d'ici le milieu du siècle dans le cadre d'un scénario à émissions élevées. 
 Ainsi, son administration municipale pourrait s'inspirer de la ville de Cleveland pour voir comment cette municipalité s'assure que son infrastructure résiste aux régimes de température actuels. 

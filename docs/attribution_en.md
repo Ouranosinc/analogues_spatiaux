@@ -6,7 +6,7 @@ Bourgault, P., Logan, T.(2022). _Development of Climate Analogs for Major Canadi
 
 We acknowledge the World Climate Research Programme, which, through its Working Group on Coupled Modelling, coordinated and promoted CMIP6. We thank the climate modeling groups for producing and making available their model output, the Earth System Grid Federation (ESGF) for archiving the data and providing access, and the multiple funding agencies who support CMIP6 and ESGF. 
 
-Data access and analysis environment for this work is provided through the Power Analytics and Visualization  for  Climate  Science  ([PAVICS](https://pavics.ouranos.ca/))  platform  (Ouranos  and  CRIM, 2022). PAVICS  is funded  through  Ouranos, the  Computer  Research  Institute  of  Montreal  (CRIM), CANARIE, the Fonds  Vert, the  Canadian  Foundation  for  Innovation  (CFI), Environment and Climate Change Canada (ECCC) and the Fonds de Recherche du Québec (FRQ). 
+Data access and analysis environment for this work is provided through the Power Analytics and Visualization  for  Climate  Science  ([PAVICS](https://pavics.ouranos.ca/){: target="_blank"})  platform  (Ouranos  and  CRIM, 2022). PAVICS  is funded  through  Ouranos, the  Computer  Research  Institute  of  Montreal  (CRIM), CANARIE, the Fonds  Vert, the  Canadian  Foundation  for  Innovation  (CFI), Environment and Climate Change Canada (ECCC) and the Fonds de Recherche du Québec (FRQ). 
 
 Population density was obtained from 4th version of the Gridded Population of the World dataset (GPWv4), for 2020.
 

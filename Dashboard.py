@@ -105,7 +105,7 @@ dash.modal.append(modal)
 dash.header.append(header)
 
     
-w_sidetitle = pn.pane.Markdown({'en':'##Loading app...','fr':'##Téléchargement...'}[LOCALE],css_classes=['sidebar-title'])
+w_sidetitle = pn.pane.Markdown({'en':'##Loading app...','fr':'##Téléchargement...'}[LOCALE],css_classes=['sidebar-title'],extentions=['attr_list'])
 sidebar.append(w_sidetitle)
 w_loading_spinner = pn.indicators.LoadingSpinner(height=100,width=100,value=True,color="primary")
 w_loading_text = pn.panel({'en':'Loading app...','fr':'Téléchargement...'}[LOCALE],
@@ -128,8 +128,8 @@ w_enter_fr = pn.widgets.Button(name='Entrer')
 w_enter_en.disabled = True
 w_enter_fr.disabled = True
 
-w_about_en = pn.Column(pn.pane.Markdown(docs['info_en'],width=350), w_enter_en,pn.layout.VSpacer(height=42))
-w_about_fr = pn.Column(pn.pane.Markdown(docs['info_fr'],width=400), w_enter_fr,pn.layout.VSpacer(height=42))
+w_about_en = pn.Column(pn.pane.Markdown(docs['info_en'],width=350,extentions=['attr_list']), w_enter_en,pn.layout.VSpacer(height=42))
+w_about_fr = pn.Column(pn.pane.Markdown(docs['info_fr'],width=400,extentions=['attr_list']), w_enter_fr,pn.layout.VSpacer(height=42))
 modal_lang = pn.Row(pn.layout.HSpacer(),w_about_en,pn.layout.HSpacer(),w_about_fr,pn.layout.HSpacer(),min_width=700)
 modal.append(modal_lang)
 
@@ -161,12 +161,12 @@ def get_helppage(locale):
                 'attribution':{"en":"Attribution and Sources","fr":"Attribution et Sources"}
                }
     docpage_locale = {k+'_'+locale:v[locale] for k,v in docpages.items()}
-    markdowns = [pn.pane.Markdown(object=f'<div id="{k}"/>\n'+ docs[k],sizing_mode='stretch_width',max_width=920,width_policy='max') for k,v in docpage_locale.items()]
+    markdowns = [pn.pane.Markdown(object=f'<div id="{k}"/>\n'+ docs[k],sizing_mode='stretch_width',max_width=920,width_policy='max',extentions=['attr_list']) for k,v in docpage_locale.items()]
     linkhtml_en = ''.join(["<h1>Help</h1><h2>Contents:</h2><table class='link-table'>",*[f'<tr><td><a href="#{page}">{i+1}– {title}</td></tr>' for i,(page,title) in enumerate(docpage_locale.items())],"</table>"])
     linkhtml_fr = ''.join(["<h1>Aide</h1><h2>Contenu:</h2><table class='link-table'>",*[f'<tr><td><a href="#{page}">{i+1}. {title}</td></tr>'  for i,(page,title) in enumerate(docpage_locale.items())],"</table>"])
 
     links = pn.pane.HTML({"en":linkhtml_en,"fr":linkhtml_fr}[locale],sizing_mode='stretch_width',max_width=920,width_policy='max')
-    w_about = pn.pane.Markdown(docs[f'info_{locale}'],max_width = 920,width_policy='max')
+    w_about = pn.pane.Markdown(docs[f'info_{locale}'],max_width = 920,width_policy='max',extentions=['attr_list'])
     
     helppage = pn.Column(name={"en":"Help","fr":"Aide"}[locale],max_width=920, width_policy='max')
     helppage.append(w_about)
