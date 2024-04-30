@@ -5,13 +5,16 @@ profile:
 	panel serve Dashboard.py --prefix analogs --autoreload --log-level=debug --admin --profiler snakeviz --static-dirs fonts=./fonts
 
 build-local:
-	docker build -t analogues-spatiaux:dev .
-
+	docker build --target base    -t analogues-spatiaux-en:dev .
+	docker build --target base-fr -t analogues-spatiaux-fr:dev .
+	
 run-local:
-	docker run -p 5006:5006 -d -e BOKEH_ALLOW_WS_ORIGIN=127.0.0.1:5006,localhost:5006 analogues-spatiaux:dev
+	docker run -p 5006:5006 -d -e BOKEH_ALLOW_WS_ORIGIN=* analogues-spatiaux-en:dev
+	docker run -p 5007:5006 -d -e BOKEH_ALLOW_WS_ORIGIN=* analogues-spatiaux-fr:dev
 
 rm-local:
-	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor='analogues-spatiaux:dev' --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME
+	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor='analogues-spatiaux-en:dev' --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME
+	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor='analogues-spatiaux-fr:dev' --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME
 
 build-test:
 	docker build -t analogues-spatiaux:test-locust ./test/test_locust

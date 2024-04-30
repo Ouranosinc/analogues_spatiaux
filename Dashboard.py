@@ -36,18 +36,20 @@ global config
 config = pn.state.as_cached('config',utils.load_config)
 app_title = {"en":"Climate Analogues","fr":"Analogues climatiques"}
 
-LOCALE = "en"
+from os import environ
+LOCALE = environ.get("LANG","en")
+
 qd = {}
-show_header = True
-show_modal = True
+show_header = environ.get("SHOW_HEADER","1") == "1"
+show_modal =  environ.get("SHOW_MODAL","1") == "1"
 
-if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location and hasattr(pn.state.location,'query_params'):
-    qd = pn.state.location.query_params
+#if hasattr(pn,'state') and hasattr(pn.state,'location') and pn.state.location and hasattr(pn.state.location,'query_params'):
+#   qd = pn.state.location.query_params
 
-if ('lang' in qd) and (qd['lang'] in ['en','fr']):
-  LOCALE = qd['lang']
-  show_header = False
-  show_modal = False
+#if ('lang' in qd) and (qd['lang'] in ['en','fr']):
+#  LOCALE = qd['lang']
+#  show_header = False
+#  show_modal = False
     
 ## Set CSS:
 # Related to integration in CCDP
