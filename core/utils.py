@@ -282,9 +282,11 @@ def dec2sexa(num, secfmt='02.0f'):
     minu = int((num - deg) * 60)
     sec = (num - deg - (minu / 60)) * 3600
     if f"{sec:{secfmt}}" == '60':
+        minu = minu + 1
+        sec = 0
+    if minu == 60:
         deg = deg + 1
         minu = 0
-        sec = 0
     return f"{deg}°{minu:02.0f}′{sec:{secfmt}}″"
 
 
