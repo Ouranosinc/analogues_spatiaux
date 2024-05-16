@@ -1,19 +1,16 @@
-FROM continuumio/miniconda3 as base
+FROM continuumio/miniconda3:23.5.2-0 as base
 
 # The environment variable ensures that the python output is set straight
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
-RUN conda install python=3.9 -y
-RUN conda install --channel conda-forge cartopy -y
-RUN conda install --channel conda-forge esmpy && conda clean -afy
+RUN conda install conda==23.7.3 -y && conda install conda-libmamba-solver -y
+RUN conda install --solver=libmamba --channel conda-forge gxx_linux-64==11.1.0 python=3.9 cartopy=0.21.1 esmpy=8.4.2 -y && conda clean -afy
 
-COPY ./requirements_minimal.txt /app/
+COPY  ./requirements_prod.txt /app/
 
-RUN pip install -r requirements_minimal.txt
-RUN apt update
-RUN apt install -y libtiff5
+RUN pip install -r requirements_prod.txt
 
 RUN mkdir -p /notebook_dir/writable-workspace
 
@@ -23,7 +20,7 @@ COPY . app
 
 WORKDIR /app
 
-RUN pip install ./
+RUN pip install --no-dependencies ./
 
 EXPOSE 5006
 
