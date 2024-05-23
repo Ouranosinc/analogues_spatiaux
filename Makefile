@@ -5,12 +5,12 @@ profile:
 	panel serve Dashboard.py --prefix analogs --autoreload --log-level=debug --admin --profiler snakeviz --static-dirs fonts=./fonts
 
 build-local:
-	docker build --target base    -t analogues-spatiaux-en:dev .
-	docker build --target base-fr -t analogues-spatiaux-fr:dev .
+	docker build --target base -t analogues-spatiaux:dev .
 	
 run-local:
-	docker run -p 5006:5006 -d -e BOKEH_ALLOW_WS_ORIGIN=* analogues-spatiaux-en:dev
-	docker run -p 5007:5006 -d -e BOKEH_ALLOW_WS_ORIGIN=* analogues-spatiaux-fr:dev
+	docker rm -f analogues-spatiaux-en analogues-spatiaux-fr
+	docker run -p 5006:5006 -d -e LANG=en -e BOKEH_ALLOW_WS_ORIGIN=* --name analogues-spatiaux-en analogues-spatiaux:dev 
+	docker run -p 5007:5006 -d -e LANG=fr -e BOKEH_ALLOW_WS_ORIGIN=* --name analogues-spatiaux-fr analogues-spatiaux:dev 
 
 rm-local:
 	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor='analogues-spatiaux-en:dev' --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME

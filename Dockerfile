@@ -1,29 +1,31 @@
-FROM continuumio/miniconda3 as base
+FROM mambaorg/micromamba as base
 
 # The environment variable ensures that the python output is set straight
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
-RUN conda install python=3.9 -y
-RUN conda install --channel conda-forge cartopy -y
-RUN conda install --channel conda-forge esmpy && conda clean -afy
 
-COPY ./requirements_minimal.txt /app/
+COPY ./environment.yml /app 
 
-RUN pip install -r requirements_minimal.txt
-RUN apt update
-RUN apt install -y libtiff5
+RUN  micromamba install -y -n base -f environment.yml && micromamba clean -afy
 
-RUN mkdir -p /notebook_dir/writable-workspace
+ENV MAMBA_DOCKERFILE_ACTIVATE=1
+RUN python -c 'import uuid; print(uuid.uuid4())' > /tmp/my_uuid
+
+# RUN pip install -r requirements_minimal.txt
+
+USER root
+RUN mkdir -p /notebook_dir/writable-workspace && chown -R ${MAMBA_USER} /notebook_dir
 
 WORKDIR /
 
-COPY . app
+COPY --chown=${MAMBA_USER} . app
 
 WORKDIR /app
 
-RUN pip install ./
+RUN pip install --no-dependencies ./
+USER ${MAMBA_USER}
 
 EXPOSE 5006
 
@@ -38,12 +40,5 @@ ENV PREFIX=analogs
 # Unset/set to 0 to hide them. (for climatedata.ca)
 ENV SHOW_HEADER=1
 ENV SHOW_MODAL=1
-
-CMD exec ./start_panel.sh
-
-FROM base as base-fr
-
-ENV LANG=fr
-ENV PREFIX=analogs-fr
 
 CMD exec ./start_panel.sh
