@@ -43,10 +43,3 @@ ENV SHOW_HEADER=1
 ENV SHOW_MODAL=1
 
 CMD exec ./start_panel.sh
-
-FROM base as base-fr
-
-ENV LANG=fr
-ENV PREFIX=analogs-fr
-
-CMD exec ./start_panel.sh
