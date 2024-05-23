@@ -4,9 +4,6 @@ FROM mambaorg/micromamba as base
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
 
-USER root
-ENV $MAMBA_USER=root
-
 WORKDIR /app
 
 COPY ./environment.yml /app 
@@ -18,15 +15,17 @@ RUN python -c 'import uuid; print(uuid.uuid4())' > /tmp/my_uuid
 
 # RUN pip install -r requirements_minimal.txt
 
-RUN mkdir -p /notebook_dir/writable-workspace
+USER root
+RUN mkdir -p /notebook_dir/writable-workspace && chown -R ${MAMBA_USER} /notebook_dir
 
 WORKDIR /
 
-COPY . app
+COPY --chown=${MAMBA_USER} . app
 
 WORKDIR /app
 
 RUN pip install --no-dependencies ./
+USER ${MAMBA_USER}
 
 EXPOSE 5006
 
