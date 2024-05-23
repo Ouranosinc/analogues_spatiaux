@@ -1,16 +1,22 @@
-FROM continuumio/miniconda3:23.5.2-0 as base
+FROM mambaorg/micromamba as base
 
 # The environment variable ensures that the python output is set straight
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
 
+USER root
+ENV $MAMBA_USER=root
+
 WORKDIR /app
-RUN conda install conda==23.7.3 -y && conda install conda-libmamba-solver -y
-RUN conda install --solver=libmamba --channel conda-forge gxx_linux-64==11.1.0 python=3.9 cartopy=0.21.1 esmpy=8.4.2 -y && conda clean -afy
 
-COPY  ./requirements_prod.txt /app/
+COPY ./environment.yml /app 
 
-RUN pip install -r requirements_prod.txt
+RUN  micromamba install -y -n base -f environment.yml && micromamba clean -afy
+
+ENV MAMBA_DOCKERFILE_ACTIVATE=1
+RUN python -c 'import uuid; print(uuid.uuid4())' > /tmp/my_uuid
+
+# RUN pip install -r requirements_minimal.txt
 
 RUN mkdir -p /notebook_dir/writable-workspace
 
