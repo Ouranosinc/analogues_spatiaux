@@ -9,13 +9,14 @@ build-local:
 	
 run-local:
 	docker rm -f analogues-spatiaux-en analogues-spatiaux-fr
-	docker run -p 5006:5006 -d -e LANG=en -e BOKEH_ALLOW_WS_ORIGIN=* --name analogues-spatiaux-en analogues-spatiaux:dev 
-	docker run -p 5007:5006 -d -e LANG=fr -e BOKEH_ALLOW_WS_ORIGIN=* --name analogues-spatiaux-fr analogues-spatiaux:dev 
+	docker run -p 5006:5006 -d --mount type=volume,source=analogues-spatiaux-share,target=/notebook_dir/writable-workspace -e LANG=en -e BOKEH_ALLOW_WS_ORIGIN=* --name analogues-spatiaux-en analogues-spatiaux:dev 
+	docker run -p 5007:5006 -d --mount type=volume,source=analogues-spatiaux-share,target=/notebook_dir/writable-workspace -e LANG=fr -e BOKEH_ALLOW_WS_ORIGIN=* --name analogues-spatiaux-fr analogues-spatiaux:dev 
 
 rm-local:
-	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor='analogues-spatiaux-en:dev' --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME
-	CONTAINER_NAME="$(shell docker ps -a -q --filter ancestor='analogues-spatiaux-fr:dev' --format="{{.ID}}")";docker stop $$CONTAINER_NAME;docker rm $$CONTAINER_NAME
-
+	docker stop analogues-spatiaux-en;docker rm analogues-spatiaux-en
+	docker stop analogues-spatiaux-fr;docker rm analogues-spatiaux-fr
+	docker volume rm analogues-spatiaux-share
+	
 build-test:
 	docker build -t analogues-spatiaux:test-locust ./test/test_locust
 	docker build -t analogues-spatiaux:test-loadwright ./test/test_loadwright
