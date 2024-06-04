@@ -5,7 +5,10 @@ from .constants import quality_thresholds, num_realizations, version_path, datav
 from pathlib import Path
 import json
 import logging
+import os
+
 logger = logging.getLogger('analogs')
+
 def load_config():
     global config
     if 'config' not in globals():
