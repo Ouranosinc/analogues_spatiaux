@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 setup(
     name='AnaloguesCore',
-    version='1.0.2',
+    version='1.2.2',
     author='Sarah Gammon',
     author_email='gammon.sarah@ouranos.ca',
     description='Core module for spatial analogues dashboard app',

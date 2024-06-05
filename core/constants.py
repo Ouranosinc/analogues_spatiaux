@@ -42,3 +42,11 @@ datavar_path = WRITE_DIR / Path('datavars.json')
 cache_path = WRITE_DIR / Path('cache/')
 version_path = WRITE_DIR / Path('versions.json')
 cities_file = Path('cities_tmp.geojson')
+
+# Cache Size (in bytes). Set to None for no limit.
+# 1e9 = 1 GB. 1e6 = 1 MB.
+# CACHE_SIZE = None
+CACHE_SIZE=1e9
+# Number of items to keep in the cache. Set to None for no limit.
+# CACHE_ITEMS = None
+CACHE_ITEMS=None
