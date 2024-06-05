@@ -12,7 +12,9 @@ from .constants import (
     cache_path,
     minpts,
     maxpts,
-    min_density)
+    min_density,
+    CACHE_SIZE,
+    CACHE_ITEMS)
 
 from .utils import (
     get_quality_flag,
@@ -38,7 +40,7 @@ from .compress import (
 
 import logging
 from joblib import Memory
-mem = Memory(cache_path, verbose=0, bytes_limit=1e9, compress=9)
+mem = Memory(cache_path, verbose=0, bytes_limit=CACHE_SIZE, compress=9)
 logger = logging.getLogger('analogs')
     
 @mem.cache(ignore=["cities","dref","dsim"])
@@ -290,7 +292,9 @@ def _analogs_search( sim,
         ilon = ilon_ref.get_loc(lon,method='nearest')
         
         analogs[ireal,:] = np.around(_to_short(site,zscore.item(),score.item(),ilat,ilon))
-        
+
+    mem.reduce_size(bytes_limit=CACHE_SIZE, items_limit=CACHE_ITEMS)
+
     return np.array(analogs,dtype='<u2').tobytes()
 
 
