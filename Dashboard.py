@@ -424,15 +424,25 @@ def update_dashboard(language=LOCALE):
         places = pn.state.as_cached('places',utils.load_places)
         update_time("search, data load: ")
         gv.extension('bokeh')
-        CartoLabels = gv.element.WMTS('https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png', name='CartoLabels')
-        CartoBase = gv.element.WMTS('https://cartodb-basemaps-4.global.ssl.fastly.net/light_nolabels/{Z}/{X}/{Y}@2x.png', name="CartoBase")
+        # options:
+        # CARTO - requires API key: 
+        #   labels: 'https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png' 
+        #   base: 'https://cartodb-basemaps-4.global.ssl.fastly.net/light_nolabels/{Z}/{X}/{Y}@2x.png'
+        # ESRI:
+        #   labels: "https://server.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{Z}/{Y}/{X}@2x"
+        #   base: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{Z}/{Y}/{X}@2x"
+        # CDN:
+        #   labels_en: 'https://maps-cartes.services.geo.ca/server2_serveur2/rest/services/BaseMaps/CBMT_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_TXT_3857/default/default/{z}/{y}/{x}.png'
+        #   labels_fr: 'https://maps-cartes.services.geo.ca/server2_serveur2/rest/services/BaseMaps/CBCT_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_TXT_3857/default/default/{z}/{y}/{x}.png'
+        #   base: 'https://maps-cartes.services.geo.ca/server2_serveur2/rest/services/BaseMaps/CBMT_CBCT_GEOM_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_CBCT_GEOM_3857/default/default/{z}/{y}/{x}.png'
 
-        CDNLabelsEn = gv.element.WMTS('https://maps-cartes.services.geo.ca/server2_serveur2/rest/services/BaseMaps/CBMT_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_TXT_3857/default/default/{z}/{y}/{x}.png', name='CDNLabelsEn')
-        CDNLabelsFr = gv.element.WMTS('https://maps-cartes.services.geo.ca/server2_serveur2/rest/services/BaseMaps/CBCT_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_TXT_3857/default/default/{z}/{y}/{x}.png', name='CDNLabelsFr')
-        EsriTopo = gv.element.WMTS('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{Z}/{Y}/{X}@2x', name="EsriTopo").opts(alpha=0.5, max_zoom=8)
-
-        LabelMap = CartoLabels if (language == "en") else CartoLabels
-
+        label_map_url_en = os.getenv("LABEL_MAP_URL_EN", "https://server.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{Z}/{Y}/{X}@2x")
+        label_map_url_fr = os.getenv("LABEL_MAP_URL_FR", label_map_url_en)
+        label_map_url = label_map_url_en if (language == "en") else label_map_url_fr
+        base_map_url = os.getenv("BASE_MAP_URL", 'https://maps-cartes.services.geo.ca/server2_serveur2/rest/services/BaseMaps/CBMT_CBCT_GEOM_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_CBCT_GEOM_3857/default/default/{z}/{y}/{x}.png')
+        
+        BaseMap = gv.element.WMTS(base_map_url, name="basemap").opts(alpha=0.5, max_zoom=8)
+        LabelMap = gv.element.WMTS(label_map_url, name="labels")
         
         # Translate the widget's values to variables
         # The goal is to keep the code here and in the notebook in sync so that copy-pasting the main parts doesn't break
@@ -529,8 +539,7 @@ def update_dashboard(language=LOCALE):
         
         analog_map =  pn.pane.HoloViews(
             (
-                CartoBase
-                * EsriTopo
+                BaseMap
                 * LabelMap
                 * gv.Path(analogs_lines).opts(nonselection_alpha=1)
                 * gv.Points([city.geometry]).opts(color=fut_col, marker='star', size=15)

@@ -1,0 +1,8 @@
+services:
+  analogues:
+    build:
+      context: ./
+    volumes:
+      - ./:/app
+    ports:
+      - 5006:5006
