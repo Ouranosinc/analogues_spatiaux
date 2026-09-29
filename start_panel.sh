@@ -24,5 +24,6 @@ panel serve \
 --prefix "${PREFIX}" \
 --use-xheaders --log-level "${LOG_LEVEL}" \
 --static-dirs fonts=./fonts scripts=./scripts \
+--allow-websocket-origin "*" \
 --num-procs $NUM_PROCS \
 --num-threads $NUM_THREADS
